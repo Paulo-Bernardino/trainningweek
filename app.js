@@ -2,16 +2,9 @@
     TREINO MOCKADO PREMIUM
     ========================= */
 const exerciciosFixos = [
-    { nome: "Abdominal na Máquina", series: 4, reps: 20, calorias: 46 },
-    { nome: "Prancha", series: 4, reps: "1 minuto", calorias: 40 },
-    { 
-        nome: "Esteira",
-        series: 1,
-        reps: "45 minutos",
-        velocidade: "6 km/h",
-        inclinacao: 6,
-        calorias: 536
-    }
+    { nome: "Abdominal na Máquina", series: 4, reps: 20, calorias: 46, url: "https://youtube.com/shorts/MkMfujLgb-M?si=Y_CLGWoV8LgHYWhK" },
+    { nome: "Prancha", series: 4, reps: "1 minuto", calorias: 40, url: "https://youtube.com/shorts/UwCFLBJv4ek?si=rGKiqX2I3B5yCzKA" },
+    { nome: "Esteira", series: 1, reps: "45 minutos", velocidade: "6 km/h", inclinacao: 6, calorias: 536 }
 ];
 
 const treinoData = {
