@@ -64,92 +64,100 @@
 /* =========================
     TREINO MOCKADO PREMIUM
     ========================= */
-const treinoData = {
+ const treinoData = {
     "Segunda": {
-        grupo: "Pernas",
-        tempoMock: "58 min",
-        cor: "from-violet-600/20 to-purple-900/20",
-        icon: "🦵", // Emoji direto
+        grupo: "Peito + Panturrilha",
+        tempoMock: "1h 05 min",
+        cor: "from-pink-500/20 to-rose-900/20",
+        icon: "🔥",
         exercicios: [
-            { nome: "Agachamento Livre", series: 4, reps: 12, calorias: 55 },
-            { nome: "Leg Press", series: 4, reps: 10, calorias: 48 },
-            { nome: "Mesa Flexora", series: 4, reps: 12, calorias: 42 },
-            { nome: "Extensora", series: 4, reps: 12, calorias: 40 },
-            { nome: "Biset: Afundo + Passada", series: 3, reps: "10 + 12", calorias: 78 }
+            { nome: "Incline Barbell Bench Press", series: 4, reps: 10, calorias: 60 },
+            { nome: "Dumbbell Bench Press", series: 4, reps: 10, calorias: 55 },
+            { nome: "Dumbbell Chest Flyes", series: 4, reps: 10, calorias: 45 },
+            { nome: "Incline Dumbbell Flyes", series: 4, reps: 10, calorias: 48 },
+            { nome: "Dips (Paralela)", series: 3, reps: "Falha", calorias: 70 },
+            { nome: "Cable Flyes", series: 3, reps: 12, calorias: 40 },
+            { nome: "Standing Calf Raises", series: 5, reps: 20, calorias: 35 },
+            { nome: "Seated Calf Raises", series: 5, reps: 25, calorias: 40 }
         ]
     },
 
     "Terça": {
-        grupo: "Costas + Ombro",
-        tempoMock: "1h 12 min",
-        cor: "from-blue-600/20 to-indigo-900/20",
-        icon: "💪", // Emoji direto
+        grupo: "Costas",
+        tempoMock: "1h 15 min",
+        cor: "from-blue-500/20 to-indigo-900/20",
+        icon: "💪",
         exercicios: [
-            { nome: "Puxada Aberta", series: 4, reps: 10, calorias: 45 },
-            { nome: "Remada Baixa", series: 4, reps: 12, calorias: 50 },
-            { nome: "Terra", series: 4, reps: 6, calorias: 90 },
-            { nome: "Desenvolvimento", series: 4, reps: 10, calorias: 55 },
-            { nome: "Elevação Lateral", series: 4, reps: 15, calorias: 35 },
-            { nome: "Biset: Remada Alta + Face Pull", series: 3, reps: "12 + 15", calorias: 70 }
+            { nome: "Levantamento Terra", series: 3, reps: 10, calorias: 95 },
+            { nome: "Remada Curvada com Barra", series: 4, reps: 12, calorias: 60 },
+            { nome: "Remada com Barra T", series: 4, reps: 10, calorias: 55 },
+            { nome: "Barra Fixa Aberta", series: 4, reps: 10, calorias: 50 },
+            { nome: "Puxada Alta Aberta", series: 4, reps: 12, calorias: 45 },
+            { nome: "Remada Sentada Cabo", series: 4, reps: 12, calorias: 50 },
+            { nome: "Bom Dia", series: 3, reps: 12, calorias: 40 }
         ]
     },
 
-    "Quarta": {
-        grupo: "Peito",
-        tempoMock: "53 min",
-        cor: "from-pink-500/20 to-purple-600/20",
-        icon: "🏋️", // Emoji direto
-        exercicios: [
-            { nome: "Supino Reto", series: 4, reps: 8, calorias: 75 },
-            { nome: "Supino Inclinado", series: 4, reps: 10, calorias: 60 },
-            { nome: "Cross Over", series: 4, reps: 12, calorias: 45 },
-            { nome: "Tríceps Testa", series: 4, reps: 12, calorias: 40 },
-            { nome: "Triset: Crucifixo + Flexão + Paralela", series: 3, reps: "12 + 12 + 10", calorias: 110 }
-        ]
-    },
-
-    "Quinta": { 
-        isRest: true, 
+    "Quarta": { 
+        isRest: true,
         icon: "🛌",
-        motivo: "Recuperação é fundamental para o crescimento muscular e prevenção de lesões." 
+        motivo: "Dia reservado para recuperação muscular total."
+    },
+
+    "Quinta": {
+        grupo: "Pernas",
+        tempoMock: "1h 20 min",
+        cor: "from-green-500/20 to-emerald-900/20",
+        icon: "🦵",
+        exercicios: [
+            { nome: "Agachamento com Barra", series: 4, reps: "8–15", calorias: 85 },
+            { nome: "Agachamento Frontal", series: 4, reps: "6–10", calorias: 80 },
+            { nome: "Hack Machine", series: 4, reps: "8–12", calorias: 70 },
+            { nome: "Leg Press", series: 4, reps: "8–10", calorias: 65 },
+            { nome: "Extensora", series: 4, reps: "8–10", calororias: 55 },
+            { nome: "Flexora Deitado", series: 4, reps: 12, calorias: 50 }
+        ]
     },
 
     "Sexta": {
-        grupo: "Braços",
-        tempoMock: "1h 05 min",
-        cor: "from-green-500/20 to-emerald-800/20",
-        icon: "💪", // Corrigido para emoji de braço
+        grupo: "Braços + Panturrilha",
+        tempoMock: "1h 10 min",
+        cor: "from-yellow-500/20 to-amber-900/20",
+        icon: "💪",
         exercicios: [
-            { nome: "Rosca Direta", series: 4, reps: 12, calorias: 40 },
-            { nome: "Tríceps Corda", series: 4, reps: 12, calorias: 40 },
-            { nome: "Rosca Martelo", series: 4, reps: 10, calorias: 50 },
-            { nome: "Biset: Testa + Inversa", series: 3, reps: "10 + 12", calorias: 65 },
-            { nome: "Triset: Scott + Alternada + Mergulho", series: 3, reps: "8 + 10 + 12", calorias: 98 },
+            { nome: "Rosca Direta Barra", series: 4, reps: "6–12", calorias: 45 },
+            { nome: "Rosca Alternada", series: 3, reps: "8–10", calorias: 35 },
+            { nome: "Rosca no Banco Scott", series: 3, reps: 15, calorias: 40 },
+            { nome: "Rosca Concentrada", series: 4, reps: "8–10", calorias: 38 },
+            { nome: "Tríceps Halter Unilateral", series: 4, reps: "15 cada", calorias: 45 },
+            { nome: "Skull Crusher", series: 4, reps: "10–12", calorias: 50 },
+            { nome: "Elevação Panturrilha em Pé", series: 5, reps: "15–20", calorias: 35 },
+            { nome: "Panturrilha Sentado", series: 5, reps: 20, calorias: 40 }
         ]
     },
 
     "Sábado": {
-        grupo: "Perna + Ombro",
-        tempoMock: "1h 20 min",
-        cor: "from-orange-500/20 to-red-800/20",
-        icon: "🔥", // Emoji direto
+        grupo: "Ombros",
+        tempoMock: "1h 05 min",
+        cor: "from-orange-500/20 to-red-900/20",
+        icon: "🔥",
         exercicios: [
-            { nome: "Esteira (Cardio)", series: "20 min", reps: "8 km/h", calorias: 180 }, 
-            { nome: "Agachamento", series: 4, reps: 10, calorias: 70 },
-            { nome: "Leg Pesado", series: 4, reps: 8, calorias: 85 },
-            { nome: "Triset Ombro", series: 3, reps: "12 + 12 + 10", calorias: 120 },
-            { nome: "Abdutora", series: 4, reps: 15, calorias: 40 },
-            { nome: "Stiff", series: 4, reps: 12, calorias: 65 }
+            { nome: "Desenvolvimento Ombros", series: 4, reps: "6–10", calorias: 55 },
+            { nome: "Elevação Lateral", series: 4, reps: 10, calorias: 35 },
+            { nome: "Arnold Press", series: 3, reps: "8–10", calorias: 50 },
+            { nome: "Posterior Inclinado", series: 4, reps: 10, calorias: 35 },
+            { nome: "Voador Inverso", series: 4, reps: "12–15", calorias: 40 },
+            { nome: "Encolhimento com Barra", series: 4, reps: "10–20", calorias: 50 },
+            { nome: "Encolhimento com Halteres", series: 3, reps: 15, calorias: 40 }
         ]
     },
 
     "Domingo": { 
-        isRest: true, 
+        isRest: true,
         icon: "🧘",
-        motivo: "Dedique este dia para um alongamento leve ou atividades de lazer."
+        motivo: "Alongamento, relaxamento e recuperação."
     }
 };
-
 
 const daySelect = document.getElementById("daySelect");
 const dayContent = document.getElementById("dayContent");
