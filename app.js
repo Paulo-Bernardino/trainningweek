@@ -10,7 +10,7 @@ const exerciciosFixos = [
         reps: "45 minutos",
         velocidade: "6 km/h",
         inclinacao: 6,
-        calorias: 536 // Valor atualizado com o cálculo
+        calorias: 536
     }
 ];
 
@@ -126,6 +126,35 @@ const dayContent = document.getElementById("dayContent");
 const caloriesRing = document.getElementById("caloriesRing");
 const calValue = document.getElementById("calValue");
 
+/* =========================
+    FUNÇÃO PARA ABRIR O YOUTUBE APP
+    ========================= */
+function openYoutubeLink(e, originalUrl) {
+    e.preventDefault(); // Impede que o WebView tente carregar a URL por padrão
+    
+    // Expressão regular para capturar o ID do vídeo de vários formatos de URL
+    const videoIdMatch = originalUrl.match(/(?:youtube\.com\/(?:shorts\/|watch\?v=)|youtu\.be\/)([^&?]+)/);
+    
+    if (videoIdMatch && videoIdMatch[1]) {
+        const id = videoIdMatch[1];
+        // O esquema 'vnd.youtube' é um Deep Link que o Android reconhece para abrir o app nativo
+        const appUrl = `vnd.youtube:${id}`;
+        
+        // 1. Tenta abrir o Deep Link
+        window.location.href = appUrl;
+
+        // 2. Fallback: Se o Deep Link falhar (o app do YouTube não está instalado, por exemplo),
+        // tentamos abrir o link padrão em uma nova janela (o que geralmente força o uso do navegador externo no WebView).
+        setTimeout(() => {
+            window.open(originalUrl, '_blank'); 
+        }, 300); // 300ms de espera para o app nativo tentar abrir
+    } else {
+        // Se a URL for de outro site ou não for um formato reconhecido, abre em nova aba/janela
+        window.open(originalUrl, '_blank'); 
+    }
+}
+
+
 /* PREENCHE SELECT */
 Object.keys(treinoData).forEach(dia => {
     daySelect.innerHTML += `<option value="${dia}">${dia}</option>`;
@@ -209,7 +238,7 @@ function renderWorkoutDay(dia, data, totalCal) {
                                 Séries: <strong class="text-white">${ex.series}</strong> • Reps: <strong class="text-white">${ex.reps}</strong>
                             </p>
                         </div>
-                        ${ex.url ? `<a href="${ex.url}" target="_blank" class="ml-4 flex-shrink-0 bg-violet-600 hover:bg-violet-700 text-white p-3 rounded-full shadow-lg transition duration-300 transform hover:scale-105" title="Ver execução do exercício"><i class="fas fa-play"></i></a>` : ''}
+                        ${ex.url ? `<a href="#" onclick="openYoutubeLink(event, '${ex.url}')" class="ml-4 flex-shrink-0 bg-violet-600 hover:bg-violet-700 text-white p-3 rounded-full shadow-lg transition duration-300 transform hover:scale-105" title="Ver execução do exercício"><i class="fas fa-play"></i></a>` : ''}
                     </div>
                 `).join("")}
             </div>
@@ -259,4 +288,4 @@ const daysOfWeek = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta",
 const today = daysOfWeek[new Date().getDay()];
 daySelect.value = today; // Define o select para o dia atual
 
-selectDay(daySelect.value || "Segunda");
+selectDay(daySelect.value || "Segunda"); 
