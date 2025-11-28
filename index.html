@@ -57,6 +57,19 @@
 
         <div id="dayContent"></div>
     </main>
-    <script src="app.js"></script> 
+  <audio id="treinoAudioPlayer" preload="auto"></audio>
+
+<div class="fixed bottom-0 left-0 right-0 p-4 bg-[#1A1B24] border-t border-white/10 shadow-2xl z-50">
+    <div class="max-w-xl mx-auto flex items-center justify-between">
+        <div id="currentSongInfo" class="text-sm">
+            <span class="text-gray-400">Pronto para tocar.</span>
+        </div>
+        <button id="playPauseButton" class="bg-violet-600 hover:bg-violet-700 text-white p-3 rounded-full shadow-lg transition duration-300 transform hover:scale-105 ml-4">
+            <i class="fas fa-play" id="playPauseIcon"></i>
+        </button>
+    </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>

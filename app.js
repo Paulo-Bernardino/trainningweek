@@ -23,6 +23,9 @@ const treinoData = {
             { nome: "Elevação De Panturrilha Em Pé", series: 5, reps: 20, calorias: 35, url: "https://youtube.com/shorts/_W3G3vJ54JU?si=JqpIZl6mpIcwCOnH" }, 
             { nome: "Elevação De Panturrilha Sentado", series: 5, reps: 25, calorias: 40, url: "https://youtube.com/shorts/6eJ9EVwazXk?si=DSHw9SHKoiA_Gqqi" }, 
             ...exerciciosFixos
+        ],
+        playlist: [
+            { nome: "Music Training!", url: "music/segunda.mp3" }
         ]
     },
 
@@ -41,6 +44,9 @@ const treinoData = {
             { nome: "Remada Sentada Cabo Triangulo", series: 4, reps: 12, calorias: 50, url: "https://youtube.com/shorts/6aN15TtOrL0?si=yxB79Kb-aLHP9Uvg" }, 
             { nome: "Hipertensão Lombar", series: 3, reps: 12, calorias: 40, url: "https://youtube.com/shorts/5RlGMbwH2S4?si=t5BgGFbcwFuoecA-" }, 
             ...exerciciosFixos
+        ],
+        playlist: [
+            { nome: "Music Training!", url: "music/terça.mp3" }
         ]
     },
 
@@ -67,6 +73,9 @@ const treinoData = {
             { nome: "Elevação De Panturrilha Sentado", series: 5, reps: 25, calorias: 61, url: "https://youtube.com/shorts/6eJ9EVwazXk?si=DSHw9SHKoiA_Gqqi" }, 
             { nome: "Panturrilha Leg Press", series: 5, reps: 15, calorias: 47, url: "https://youtube.com/shorts/83e3vyu0_XE?si=r7h1_64cUj3TO4H4" }, 
             ...exerciciosFixos
+        ],
+        playlist: [
+            { nome: "Music Training!", url: "music/quinta.mp3" }
         ]
     },
 
@@ -85,6 +94,9 @@ const treinoData = {
             { nome: "Rosca Inversa Com Barra W", series: 4, reps: "12", calorias: 62, url: "https://youtube.com/shorts/b57Wyr7c1Xk?si=R8_9AQUjAscyy0gl" }, 
             { nome: "Rosca Martelo Pulley", series: 4, reps: "12", calorias: 62, url: "https://youtube.com/shorts/N1Rt9ddr_I0?si=hfsz6-gNRIUN3lRC" }, 
             ...exerciciosFixos
+        ],
+        playlist: [
+            { nome: "Music Training!", url: "music/sexta.mp3" }
         ]
     },
 
@@ -104,6 +116,9 @@ const treinoData = {
             { nome: "Elevação De Panturrilha Sentado", series: 5, reps: 25, calorias: 61, url: "https://youtube.com/shorts/6eJ9EVwazXk?si=DSHw9SHKoiA_Gqqi" }, 
             { nome: "Panturrilha Leg Press", series: 5, reps: 15, calorias: 47, url: "https://youtube.com/shorts/83e3vyu0_XE?si=r7h1_64cUj3TO4H4" }, 
             ...exerciciosFixos
+        ],
+        playlist: [
+            { nome: "Music Training!", url: "music/sabado.mp3" }
         ]
     },
 
@@ -120,29 +135,36 @@ const caloriesRing = document.getElementById("caloriesRing");
 const calValue = document.getElementById("calValue");
 
 /* =========================
+    NOVAS VARIÁVEIS PARA O PLAYER DE MÚSICA
+    ========================= */
+const audioPlayer = document.getElementById("treinoAudioPlayer");
+const playPauseButton = document.getElementById("playPauseButton");
+const playPauseIcon = document.getElementById("playPauseIcon");
+const currentSongInfo = document.getElementById("currentSongInfo");
+
+let currentPlaylist = [];
+let currentTrackIndex = 0;
+let isPlaying = false; 
+
+/* =========================
     FUNÇÃO PARA ABRIR O YOUTUBE APP
     ========================= */
 function openYoutubeLink(e, originalUrl) {
-    e.preventDefault(); // Impede que o WebView tente carregar a URL por padrão
+    e.preventDefault(); 
     
-    // Expressão regular para capturar o ID do vídeo de vários formatos de URL
+    // Expressão regular para capturar o ID do vídeo
     const videoIdMatch = originalUrl.match(/(?:youtube\.com\/(?:shorts\/|watch\?v=)|youtu\.be\/)([^&?]+)/);
     
     if (videoIdMatch && videoIdMatch[1]) {
         const id = videoIdMatch[1];
-        // O esquema 'vnd.youtube' é um Deep Link que o Android reconhece para abrir o app nativo
         const appUrl = `vnd.youtube:${id}`;
         
-        // 1. Tenta abrir o Deep Link
         window.location.href = appUrl;
 
-        // 2. Fallback: Se o Deep Link falhar (o app do YouTube não está instalado, por exemplo),
-        // tentamos abrir o link padrão em uma nova janela (o que geralmente força o uso do navegador externo no WebView).
         setTimeout(() => {
             window.open(originalUrl, '_blank'); 
-        }, 300); // 300ms de espera para o app nativo tentar abrir
+        }, 300); 
     } else {
-        // Se a URL for de outro site ou não for um formato reconhecido, abre em nova aba/janela
         window.open(originalUrl, '_blank'); 
     }
 }
@@ -156,6 +178,111 @@ Object.keys(treinoData).forEach(dia => {
 daySelect.addEventListener("change", (e) => {
     selectDay(e.target.value);
 });
+
+/* =========================
+    FUNÇÕES DE PLAYLIST
+    ========================= */
+
+// Tenta tocar a música atual
+function playCurrentTrack() {
+    if (currentPlaylist.length === 0) return;
+
+    const track = currentPlaylist[currentTrackIndex];
+    audioPlayer.src = track.url;
+    currentSongInfo.innerHTML = `
+        <span class="text-xs text-gray-400">Tocando ${currentTrackIndex + 1}/${currentPlaylist.length}:</span>
+        <div class="font-semibold text-white">${track.nome}</div>
+    `;
+
+    audioPlayer.load(); 
+    
+    const playPromise = audioPlayer.play();
+    if (playPromise !== undefined) {
+        playPromise.then(_ => {
+            isPlaying = true;
+            playPauseIcon.className = "fas fa-pause";
+        })
+        .catch(error => {
+            // Play bloqueado: Apenas atualiza o ícone para 'Play' para que o usuário clique
+            isPlaying = false;
+            playPauseIcon.className = "fas fa-play";
+        });
+    }
+}
+
+// Passa para a próxima música e **repete a playlist** se for o fim
+function playNextTrack() {
+    if (currentPlaylist.length === 0) return;
+
+    currentTrackIndex++;
+    
+    // Repete: Se o índice for maior ou igual ao tamanho da lista, volta para o início (0)
+    if (currentTrackIndex >= currentPlaylist.length) {
+        currentTrackIndex = 0;
+    }
+    
+    playCurrentTrack();
+}
+
+// Configura os eventos de áudio (clique e fim de música)
+function setupAudioPlayer() {
+    // 1. EVENTO DE FIM DE MÚSICA: Toca a próxima
+    // Isso garante que a playlist toque e repita sem parar.
+    audioPlayer.addEventListener('ended', playNextTrack);
+
+    // 2. CONTROLE MANUAL (Botão Play/Pause)
+    playPauseButton.addEventListener('click', () => {
+        if (currentPlaylist.length === 0 || playPauseButton.disabled) return;
+
+        if (isPlaying) {
+            audioPlayer.pause();
+            isPlaying = false;
+            playPauseIcon.className = "fas fa-play";
+        } else {
+            // Se já tiver uma fonte e estiver pausado, apenas continua
+            if (audioPlayer.src && audioPlayer.paused) {
+                 audioPlayer.play();
+                 isPlaying = true;
+                 playPauseIcon.className = "fas fa-pause";
+            } else {
+                 // Caso contrário, inicia a playlist a partir do zero
+                 playCurrentTrack();
+            }
+        }
+    });
+}
+
+// Atualiza a playlist quando o dia muda
+function setupAudioPlayerForDay(dia) {
+    const data = treinoData[dia];
+    
+    // Para a música atual e reseta o estado
+    audioPlayer.pause();
+    isPlaying = false;
+    playPauseIcon.className = "fas fa-play";
+    
+    // Se for dia de descanso ou não tiver playlist
+    if (data.isRest || !data.playlist || data.playlist.length === 0) {
+        currentPlaylist = [];
+        currentSongInfo.innerHTML = '<span class="text-gray-400">Sem música neste dia.</span>';
+        playPauseButton.disabled = true;
+        audioPlayer.removeAttribute('src'); // Limpa a fonte do player
+        return;
+    }
+
+    // Configura nova playlist e o primeiro track
+    playPauseButton.disabled = false;
+    currentPlaylist = data.playlist;
+    currentTrackIndex = 0;
+    
+    // Define a fonte da primeira música, mas não toca automaticamente
+    audioPlayer.src = currentPlaylist[0].url;
+    currentSongInfo.innerHTML = `
+        <span class="text-xs text-gray-400">Pronta ${currentTrackIndex + 1}/${currentPlaylist.length}:</span>
+        <div class="font-semibold text-white">${currentPlaylist[0].nome}</div>
+    `;
+}
+
 
 /* =========================
     FUNÇÃO PRINCIPAL
@@ -175,11 +302,15 @@ function selectDay(dia) {
             renderWorkoutDay(dia, data, totalCal);
         }
         dayContent.style.opacity = 1; // Finaliza a transição de entrada
+        
+        // NOVO: Chama a função para carregar a playlist do dia
+        setupAudioPlayerForDay(dia); 
     }, 200); 
 }
 
 /* Renderiza o dia de Descanso */
 function renderRestDay(data) {
+    // ... (função renderRestDay inalterada) ...
     dayContent.innerHTML = `
         <div class="mt-8 p-10 rounded-3xl bg-[#1A1B24] border border-white/10 card-3d text-center transition-opacity duration-300">
             <p class="text-6xl mb-4">${data.icon || '😴'}</p>
@@ -191,6 +322,7 @@ function renderRestDay(data) {
 
 /* Renderiza o dia de Treino */
 function renderWorkoutDay(dia, data, totalCal) {
+    // ... (função renderWorkoutDay inalterada) ...
     dayContent.innerHTML = `
         <div class="p-8 rounded-3xl bg-gradient-to-br ${data.cor} backdrop-blur-2xl border border-white/10 mt-8 shadow-2xl card-3d transition-opacity duration-300">
 
@@ -281,4 +413,7 @@ const daysOfWeek = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta",
 const today = daysOfWeek[new Date().getDay()];
 daySelect.value = today; // Define o select para o dia atual
 
-selectDay(daySelect.value || "Segunda"); 
+selectDay(daySelect.value || "Segunda");
+
+// Inicializa o player de áudio e configura os eventos de clique e "fim de música"
+setupAudioPlayer();
