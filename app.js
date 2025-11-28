@@ -25,7 +25,7 @@ const treinoData = {
             ...exerciciosFixos
         ],
         playlist: [
-            { nome: "Music Training!", url: "music/segunda.mp3" }
+            { nome: "Music Training!", url: "https://paulo-bernardino.github.io/trainningweek/music/segunda.mp3" }
         ]
     },
 
@@ -46,7 +46,7 @@ const treinoData = {
             ...exerciciosFixos
         ],
         playlist: [
-            { nome: "Music Training!", url: "music/terça.mp3" }
+            { nome: "Music Training!", url: "https://paulo-bernardino.github.io/trainningweek/music/terca.mp3" }
         ]
     },
 
@@ -75,7 +75,7 @@ const treinoData = {
             ...exerciciosFixos
         ],
         playlist: [
-            { nome: "Music Training!", url: "music/quinta.mp3" }
+            { nome: "Music Training!", url: "https://paulo-bernardino.github.io/trainningweek/music/quinta.mp3" }
         ]
     },
 
@@ -96,7 +96,7 @@ const treinoData = {
             ...exerciciosFixos
         ],
         playlist: [
-            { nome: "Music Training!", url: "music/sexta.mp3" }
+            { nome: "Music Training!", url: "https://paulo-bernardino.github.io/trainningweek/music/sexta.mp3" }
         ]
     },
 
@@ -118,7 +118,7 @@ const treinoData = {
             ...exerciciosFixos
         ],
         playlist: [
-            { nome: "Music Training!", url: "music/sabado.mp3" }
+            { nome: "Music Training!", url: "https://paulo-bernardino.github.io/trainningweek/music/sabado.mp3" }
         ]
     },
 
