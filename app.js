@@ -1,9 +1,7 @@
-/* =========================
-    TREINO MOCKADO PREMIUM
-    ========================= */
+/* ---------- Dados (treino) ---------- */
 const exerciciosFixos = [
-    { nome: "Abdominal na Máquina", series: 4, reps: 20, calorias: 46, url: "https://youtube.com/shorts/MkMfujLgb-M?si=Y_CLGWoV8LgHYWhK" },
-    { nome: "Prancha", series: 4, reps: "1 minuto", calorias: 40, url: "https://youtube.com/shorts/UwCFLBJv4ek?si=rGKiqX2I3B5yCzKA" },
+    { nome: "Abdominal na Máquina", series: 4, reps: 20, calorias: 46, url: "https://youtube.com/shorts/MkMfujLgb-M" },
+    { nome: "Prancha", series: 4, reps: "1 minuto", calorias: 40, url: "https://youtube.com/shorts/UwCFLBJv4ek" },
     { nome: "Esteira", series: 1, reps: "45 minutos", velocidade: "6 km/h", inclinacao: 6, calorias: 536 }
 ];
 
@@ -129,291 +127,329 @@ const treinoData = {
     }
 };
 
-const daySelect = document.getElementById("daySelect");
-const dayContent = document.getElementById("dayContent");
-const caloriesRing = document.getElementById("caloriesRing");
-const calValue = document.getElementById("calValue");
+/* ---------- DOM elements ---------- */
+const daySelect = document.getElementById('daySelect');
+const dayContent = document.getElementById('dayContent');
+const caloriesRing = document.getElementById('caloriesRing');
+const totalCalEl = document.getElementById('totalCalorias'); // aqui mostra TOTAL (treino + BMR)
 
-/* =========================
-    NOVAS VARIÁVEIS PARA O PLAYER DE MÚSICA
-    ========================= */
-const audioPlayer = document.getElementById("treinoAudioPlayer");
-const playPauseButton = document.getElementById("playPauseButton");
-const playPauseIcon = document.getElementById("playPauseIcon");
-const currentSongInfo = document.getElementById("currentSongInfo");
+const tabTraining = document.getElementById('tabTraining');
+const tabPhysical = document.getElementById('tabPhysical');
+const contentTraining = document.getElementById('contentTraining');
+const contentPhysical = document.getElementById('contentPhysical');
+
+const physicalForm = document.getElementById('physicalForm');
+const bmrResult = document.getElementById('bmrResult');
+const bmrValueEl = document.getElementById('bmrValue');
+
+const inputWeight = document.getElementById('weight');
+const inputHeight = document.getElementById('height');
+const inputAge = document.getElementById('age');
+const inputGender = document.getElementById('gender');
+
+const messageBox = document.getElementById('messageBox');
+
+const audioPlayer = document.getElementById('treinoAudioPlayer');
+const playPauseButton = document.getElementById('playPauseButton');
+const playPauseIcon = document.getElementById('playPauseIcon');
+const currentSongInfo = document.getElementById('currentSongInfo');
 
 let currentPlaylist = [];
 let currentTrackIndex = 0;
-let isPlaying = false; 
+let isPlaying = false;
 
-/* =========================
-    FUNÇÃO PARA ABRIR O YOUTUBE APP
-    ========================= */
+/* ---------- Storage helpers ---------- */
+function loadAppData() {
+    try {
+        const s = localStorage.getItem('iTrainData');
+        if (!s) return { physicalConfig: { weight:112, height:181, age:29, gender:'male', bmr:0 }, currentDay: null };
+        return JSON.parse(s);
+    } catch (e) {
+        console.error('load error', e);
+        return { physicalConfig: { weight:112, height:181, age:29, gender:'male', bmr:0 }, currentDay: null };
+    }
+}
+function saveAppData(data) {
+    try { localStorage.setItem('iTrainData', JSON.stringify(data)); } catch(e){ console.error('save error', e); }
+}
+let appData = loadAppData();
+
+/* ---------- Utils ---------- */
+function showMessage(msg, type='success') {
+    messageBox.textContent = msg;
+    messageBox.className = 'fixed top-4 left-1/2 -translate-x-1/2 p-4 rounded-xl shadow-xl transition-opacity duration-300 opacity-0 hidden z-[100]';
+    messageBox.classList.add(type === 'success' ? 'bg-green-600' : 'bg-red-600');
+    messageBox.classList.remove('hidden');
+    setTimeout(()=> messageBox.classList.remove('opacity-0'), 10);
+    setTimeout(()=> {
+        messageBox.classList.add('opacity-0');
+        setTimeout(()=> messageBox.classList.add('hidden'), 300);
+    }, 3000);
+}
+
+function calculateBMR(weightKg, heightCm, age, gender) {
+    let bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age);
+    bmr += (gender === 'male') ? 5 : -161;
+    return Math.round(bmr);
+}
+
+/* ---------- Populate days select ---------- */
+function populateDaySelect() {
+    const days = Object.keys(treinoData);
+    daySelect.innerHTML = days.map(d => `<option value="${d}">${d}</option>`).join('');
+    const stored = appData.currentDay;
+    const daysOfWeek = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+    const today = daysOfWeek[new Date().getDay()];
+    daySelect.value = stored && days.includes(stored) ? stored : (days.includes(today) ? today : days[0]);
+}
+
+/* ---------- Animations & ring ---------- */
+function animateValueDOM(el, start, end, duration=700) {
+    start = Number(start) || 0; end = Number(end) || 0;
+    const range = end - start;
+    let startTime = null;
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime)/duration, 1);
+        el.textContent = Math.floor(start + range * progress);
+        if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+}
+
+function updateRingAndTotal(trainingCalories) {
+    const bmr = (appData.physicalConfig && Number(appData.physicalConfig.bmr)) ? Number(appData.physicalConfig.bmr) : 0;
+    const total = Number(trainingCalories) + bmr;
+
+    // atualiza total animado
+    animateValueDOM(totalCalEl, Number(totalCalEl.textContent) || 0, total, 700);
+
+    // atualiza ring com base no total (ou ajuste de metas)
+    const circumference = 440;
+    const maxGoal = Math.max(600, total); // garantir visível
+    const percent = Math.min(total / maxGoal, 1);
+    const offset = circumference - circumference * percent;
+    caloriesRing.style.strokeDashoffset = offset;
+    caloriesRing.style.stroke = "#A855F7";
+}
+
+/* ---------- YouTube open helper ---------- */
 function openYoutubeLink(e, originalUrl) {
-    e.preventDefault(); 
-    
-    // Expressão regular para capturar o ID do vídeo
-    const videoIdMatch = originalUrl.match(/(?:youtube\.com\/(?:shorts\/|watch\?v=)|youtu\.be\/)([^&?]+)/);
-    
+    e.preventDefault();
+    const videoIdMatch = originalUrl.match(/(?:youtube\.com\/(?:shorts\/|watch\\?v=)|youtu\.be\/)([^&?]+)/);
     if (videoIdMatch && videoIdMatch[1]) {
         const id = videoIdMatch[1];
         const appUrl = `vnd.youtube:${id}`;
-        
         window.location.href = appUrl;
-
-        setTimeout(() => {
-            window.open(originalUrl, '_blank'); 
-        }, 300); 
+        setTimeout(()=> window.open(originalUrl, '_blank'), 300);
     } else {
-        window.open(originalUrl, '_blank'); 
+        window.open(originalUrl, '_blank');
     }
 }
 
-
-/* PREENCHE SELECT */
-Object.keys(treinoData).forEach(dia => {
-    daySelect.innerHTML += `<option value="${dia}">${dia}</option>`;
-});
-
-daySelect.addEventListener("change", (e) => {
-    selectDay(e.target.value);
-});
-
-/* =========================
-    FUNÇÕES DE PLAYLIST
-    ========================= */
-
-// Tenta tocar a música atual
-function playCurrentTrack() {
-    if (currentPlaylist.length === 0) return;
-
-    const track = currentPlaylist[currentTrackIndex];
-    audioPlayer.src = track.url;
-    currentSongInfo.innerHTML = `
-        <span class="text-xs text-gray-400">Tocando ${currentTrackIndex + 1}/${currentPlaylist.length}:</span>
-        <div class="font-semibold text-white">${track.nome}</div>
-    `;
-
-    audioPlayer.load(); 
-    
-    const playPromise = audioPlayer.play();
-    if (playPromise !== undefined) {
-        playPromise.then(_ => {
-            isPlaying = true;
-            playPauseIcon.className = "fas fa-pause";
-        })
-        .catch(error => {
-            // Play bloqueado: Apenas atualiza o ícone para 'Play' para que o usuário clique
-            isPlaying = false;
-            playPauseIcon.className = "fas fa-play";
-        });
-    }
-}
-
-// Passa para a próxima música e **repete a playlist** se for o fim
-function playNextTrack() {
-    if (currentPlaylist.length === 0) return;
-
-    currentTrackIndex++;
-    
-    // Repete: Se o índice for maior ou igual ao tamanho da lista, volta para o início (0)
-    if (currentTrackIndex >= currentPlaylist.length) {
-        currentTrackIndex = 0;
-    }
-    
-    playCurrentTrack();
-}
-
-// Configura os eventos de áudio (clique e fim de música)
+/* ---------- Audio player (simples) ---------- */
 function setupAudioPlayer() {
-    // 1. EVENTO DE FIM DE MÚSICA: Toca a próxima
-    // Isso garante que a playlist toque e repita sem parar.
     audioPlayer.addEventListener('ended', playNextTrack);
-
-    // 2. CONTROLE MANUAL (Botão Play/Pause)
     playPauseButton.addEventListener('click', () => {
         if (currentPlaylist.length === 0 || playPauseButton.disabled) return;
-
         if (isPlaying) {
-            audioPlayer.pause();
-            isPlaying = false;
-            playPauseIcon.className = "fas fa-play";
+            audioPlayer.pause(); isPlaying = false; playPauseIcon.className = 'fas fa-play';
+            currentSongInfo.innerHTML = '<span class="text-gray-400">Pausado.</span>';
         } else {
-            // Se já tiver uma fonte e estiver pausado, apenas continua
-            if (audioPlayer.src && audioPlayer.paused) {
-                 audioPlayer.play();
-                 isPlaying = true;
-                 playPauseIcon.className = "fas fa-pause";
-            } else {
-                 // Caso contrário, inicia a playlist a partir do zero
-                 playCurrentTrack();
-            }
+            const p = audioPlayer.play();
+            if (p !== undefined) {
+                p.then(()=> { isPlaying = true; playPauseIcon.className = 'fas fa-pause'; })
+                 .catch(()=> { isPlaying = false; playPauseIcon.className = 'fas fa-play'; });
+            } else { isPlaying = true; playPauseIcon.className = 'fas fa-pause'; }
         }
     });
 }
-
-// Atualiza a playlist quando o dia muda
+function playCurrentTrack() {
+    if (currentPlaylist.length === 0) return;
+    const track = currentPlaylist[currentTrackIndex];
+    audioPlayer.src = track.url;
+    currentSongInfo.innerHTML = `<span class="text-xs text-gray-400">Tocando ${currentTrackIndex+1}/${currentPlaylist.length}:</span><div class="font-semibold text-white">${track.nome}</div>`;
+    audioPlayer.load();
+    const p = audioPlayer.play();
+    if (p !== undefined) {
+        p.then(()=> { isPlaying = true; playPauseIcon.className = 'fas fa-pause'; })
+         .catch(()=> { isPlaying = false; playPauseIcon.className = 'fas fa-play'; });
+    }
+}
+function playNextTrack() {
+    if (currentPlaylist.length === 0) return;
+    currentTrackIndex = (currentTrackIndex + 1) % currentPlaylist.length;
+    playCurrentTrack();
+}
 function setupAudioPlayerForDay(dia) {
     const data = treinoData[dia];
-    
-    // Para a música atual e reseta o estado
-    audioPlayer.pause();
-    isPlaying = false;
-    playPauseIcon.className = "fas fa-play";
-    
-    // Se for dia de descanso ou não tiver playlist
-    if (data.isRest || !data.playlist || data.playlist.length === 0) {
-        currentPlaylist = [];
+    audioPlayer.pause(); audioPlayer.removeAttribute('src');
+    isPlaying = false; currentPlaylist = []; currentTrackIndex = 0;
+    playPauseIcon.className = 'fas fa-play'; playPauseButton.disabled = false;
+    currentSongInfo.innerHTML = '<span class="text-gray-400">Pronto.</span>';
+    if (!data || data.isRest || !data.playlist || data.playlist.length === 0) {
         currentSongInfo.innerHTML = '<span class="text-gray-400">Sem música neste dia.</span>';
-        playPauseButton.disabled = true;
-        audioPlayer.removeAttribute('src'); // Limpa a fonte do player
-        return;
+        playPauseButton.disabled = true; return;
     }
-
-    // Configura nova playlist e o primeiro track
-    playPauseButton.disabled = false;
-    currentPlaylist = data.playlist;
+    currentPlaylist = data.playlist.slice();
     currentTrackIndex = 0;
-    
-    // Define a fonte da primeira música, mas não toca automaticamente
     audioPlayer.src = currentPlaylist[0].url;
-    currentSongInfo.innerHTML = `
-        <span class="text-xs text-gray-400">Pronta ${currentTrackIndex + 1}/${currentPlaylist.length}:</span>
-        <div class="font-semibold text-white">${currentPlaylist[0].nome}</div>
-    `;
+    currentSongInfo.innerHTML = `<span class="text-xs text-gray-400">Pronta 1/${currentPlaylist.length}:</span><div class="font-semibold text-white">${currentPlaylist[0].nome}</div>`;
 }
 
-
-/* =========================
-    FUNÇÃO PRINCIPAL
-    ========================= */
-function selectDay(dia) {
-    const data = treinoData[dia];
-    
-    dayContent.style.opacity = 0; // Inicia a transição de saída
-
-    setTimeout(() => {
-        if (data.isRest) {
-            updateRing(0, "white", "0"); 
-            renderRestDay(data);
-        } else {
-            const totalCal = data.exercicios.reduce((acc, ex) => acc + ex.calorias, 0);
-            updateRing(totalCal, "#A855F7", 600); 
-            renderWorkoutDay(dia, data, totalCal);
-        }
-        dayContent.style.opacity = 1; // Finaliza a transição de entrada
-        
-        // NOVO: Chama a função para carregar a playlist do dia
-        setupAudioPlayerForDay(dia); 
-    }, 200); 
-}
-
-/* Renderiza o dia de Descanso */
+/* ---------- Render functions ---------- */
 function renderRestDay(data) {
-    // ... (função renderRestDay inalterada) ...
     dayContent.innerHTML = `
-        <div class="mt-8 p-10 rounded-3xl bg-[#1A1B24] border border-white/10 card-3d text-center transition-opacity duration-300">
+        <div class="mt-8 p-10 rounded-3xl bg-[#1A1B24] border border-white/10 text-center transition-opacity duration-300">
             <p class="text-6xl mb-4">${data.icon || '😴'}</p>
             <h2 class="text-3xl font-extrabold mb-2 text-violet-400">Dia de Descanso</h2>
             <p class="text-gray-400 text-lg">${data.motivo || 'Recuperação é parte essencial do progresso!'}</p>
-        </div>
-    `;
+        </div>`;
 }
 
-/* Renderiza o dia de Treino */
 function renderWorkoutDay(dia, data, totalCal) {
-    // ... (função renderWorkoutDay inalterada) ...
-    dayContent.innerHTML = `
-        <div class="p-8 rounded-3xl bg-gradient-to-br ${data.cor} backdrop-blur-2xl border border-white/10 mt-8 shadow-2xl card-3d transition-opacity duration-300">
+    const exercisesHtml = data.exercicios.map(ex => {
+        const urlButton = ex.url ? `<a href="#" onclick="openYoutubeLink(event, '${ex.url}')" class="ml-4 flex-shrink-0 bg-violet-600 hover:bg-violet-700 text-white p-3 rounded-full shadow-lg transition duration-300 transform hover:scale-105" title="Ver execução do exercício"><i class="fas fa-play"></i></a>` : '';
+        return `
+            <div class="p-4 bg-white/10 border border-white/10 rounded-xl hover:bg-white/20 transition duration-200 backdrop-blur-sm flex justify-between items-center">
+                <div class="flex-grow">
+                    <div class="flex justify-between items-center mb-1">
+                        <strong class="text-lg">${ex.nome}</strong>
+                        <div class="relative inline-flex items-center">
+                            <span class="text-sm font-semibold text-pink-300 bg-pink-900/40 px-3 py-1 rounded-full relative z-10">${ex.calorias} kcal</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-300 mt-1">Séries: <strong class="text-white">${ex.series}</strong> • Reps: <strong class="text-white">${ex.reps}</strong></p>
+                </div>
+                ${urlButton}
+            </div>`;
+    }).join('');
 
+    dayContent.innerHTML = `
+        <div class="p-8 rounded-3xl bg-gradient-to-br ${data.cor} backdrop-blur-2xl border border-white/10 mt-8 shadow-2xl transition-opacity duration-300">
             <div class="flex items-center mb-4">
                 <span class="text-4xl mr-3">${data.icon || '🏋️'}</span>
                 <div>
                     <h2 class="text-3xl font-extrabold">${dia}</h2>
-                    <p class="text-gray-300 text-lg">Foco: <span class="text-white font-bold">${data.grupo}</span></p>
+                    <p class="text-gray-300 text-lg">Foco: <span class="text-white font-bold">${data.grupo || ''}</span></p>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4 mb-6 text-center border-t border-b border-white/10 py-4">
                 <div>
                     <p class="text-sm text-gray-400">Duração Estimada</p>
-                    <span class="text-2xl font-bold text-cyan-300">${data.tempoMock}</span>
+                    <span class="text-2xl font-bold text-cyan-300">${data.tempoMock || '-'}</span>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-400">Calorias (Estimativa)</p>
+                    <p class="text-sm text-gray-400">Calorias (Treino)</p>
                     <span class="text-2xl font-bold text-pink-400">${totalCal} kcal</span>
                 </div>
             </div>
 
             <h3 class="text-xl font-semibold mb-4 text-gray-200">Exercícios <span class="text-base font-normal">(${data.exercicios.length})</span></h3>
-            
-            <div class="space-y-4">
-                ${data.exercicios.map(ex => `
-                    <div class="p-4 bg-white/10 border border-white/10 rounded-xl hover:bg-white/20 transition duration-200 backdrop-blur-sm flex justify-between items-center">
-                        <div class="flex-grow">
-                            <div class="flex justify-between items-center mb-1">
-                                <strong class="text-lg">${ex.nome}</strong>
-                                <div class="relative inline-flex items-center">
-                                    <span class="text-sm font-semibold text-pink-300 bg-pink-900/40 px-3 py-1 rounded-full relative z-10 calorie-value">
-                                        ${ex.calorias} kcal
-                                    </span>
-                                </div>
-                            </div>
-                            <p class="text-sm text-gray-300 mt-1">
-                                Séries: <strong class="text-white">${ex.series}</strong> • Reps: <strong class="text-white">${ex.reps}</strong>
-                            </p>
-                        </div>
-                        ${ex.url ? `<a href="#" onclick="openYoutubeLink(event, '${ex.url}')" class="ml-4 flex-shrink-0 bg-violet-600 hover:bg-violet-700 text-white p-3 rounded-full shadow-lg transition duration-300 transform hover:scale-105" title="Ver execução do exercício"><i class="fas fa-play"></i></a>` : ''}
-                    </div>
-                `).join("")}
-            </div>
-
-        </div>
-    `;
+            <div class="space-y-4">${exercisesHtml}</div>
+        </div>`;
 }
 
+/* ---------- selectDay (central) ---------- */
+function selectDay(dia) {
+    const data = treinoData[dia];
 
-/* =========================
-    APPLE WATCH RING ANIMATION
-    ========================= */
-function updateRing(calories, color = "#A855F7", maxGoal = 600) {
-    const max = maxGoal; 
-    const percent = Math.min(calories / max, 1);
-    const circumference = 440;
+    // reset UI
+    dayContent.innerHTML = '';
+    totalCalEl.textContent = '0';
+    caloriesRing.style.strokeDashoffset = 440;
+    audioPlayer.pause(); audioPlayer.removeAttribute('src');
+    isPlaying = false; currentPlaylist = []; currentTrackIndex = 0;
+    playPauseIcon.className = 'fas fa-play';
+    currentSongInfo.innerHTML = '';
 
-    const offset = circumference - circumference * percent;
+    if (!data) {
+        dayContent.innerHTML = `<div class="mt-8 p-6 rounded-xl bg-[#1A1B24] text-center">Dia não encontrado.</div>`;
+        return;
+    }
+    if (data.isRest) {
+        renderRestDay(data);
+        setupAudioPlayerForDay(dia);
+        updateRingAndTotal(0);
+        appData.currentDay = dia; saveAppData(appData);
+        return;
+    }
 
-    caloriesRing.style.strokeDashoffset = offset;
-    caloriesRing.style.stroke = color;
-
-    // Animação do valor de calorias (apenas no número)
-    const currentCal = parseInt(calValue.textContent);
-    animateValue(calValue, currentCal, calories, 1000); 
+    // setup audio, render treino e atualizar total+BMR
+    setupAudioPlayerForDay(dia);
+    const totalCal = data.exercicios.reduce((s, ex) => s + (Number(ex.calorias) || 0), 0);
+    renderWorkoutDay(dia, data, totalCal);
+    updateRingAndTotal(totalCal);
+    appData.currentDay = dia; saveAppData(appData);
 }
 
-// Função de animação simples (melhora o visual do anel)
-function animateValue(obj, start, end, duration) {
-    let startTime = null;
-
-    const step = (timestamp) => {
-        if (!startTime) startTime = timestamp;
-        const progress = Math.min((timestamp - startTime) / duration, 1);
-        obj.textContent = Math.floor(progress * (end - start) + start);
-        if (progress < 1) {
-            window.requestAnimationFrame(step);
-        }
-    };
-
-    window.requestAnimationFrame(step);
+/* ---------- Physical form ---------- */
+function renderPhysicalConfig() {
+    const cfg = appData.physicalConfig || { weight:112, height:181, age:29, gender:'male', bmr:0 };
+    inputWeight.value = cfg.weight;
+    inputHeight.value = cfg.height;
+    inputAge.value = cfg.age;
+    inputGender.value = cfg.gender;
+    if (cfg.bmr && Number(cfg.bmr) > 0) {
+        bmrValueEl.textContent = `${Number(cfg.bmr).toLocaleString()} kcal/dia`;
+        bmrResult.classList.remove('hidden');
+    } else {
+        bmrValueEl.textContent = `0 kcal/dia`;
+        bmrResult.classList.add('hidden');
+    }
 }
 
-/* Dia padrão - Inicia na Segunda-feira ou no dia atual, se for o caso */
-// Obtém o dia atual da semana
-const daysOfWeek = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-const today = daysOfWeek[new Date().getDay()];
-daySelect.value = today; // Define o select para o dia atual
+physicalForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const w = parseFloat(inputWeight.value);
+    const h = parseFloat(inputHeight.value);
+    const a = parseInt(inputAge.value, 10);
+    const g = inputGender.value;
+    if (isNaN(w) || isNaN(h) || isNaN(a) || w<=0 || h<=0 || a<=0) {
+        showMessage('Insira valores válidos para Peso, Altura e Idade.', 'error');
+        return;
+    }
+    const bmr = calculateBMR(w,h,a,g);
+    appData.physicalConfig = { weight:w, height:h, age:a, gender:g, bmr };
+    saveAppData(appData);
+    renderPhysicalConfig();
+    showMessage(`TMB calculado: ${bmr.toLocaleString()} kcal. Dados salvos!`);
+    // se já houver dia selecionado, atualiza o total mostrado
+    const currentDay = daySelect.value;
+    if (currentDay) {
+        const data = treinoData[currentDay];
+        const trainingCal = data && data.exercicios ? data.exercicios.reduce((s, ex) => s + (Number(ex.calorias)||0), 0) : 0;
+        updateRingAndTotal(trainingCal);
+    }
+});
 
-selectDay(daySelect.value || "Segunda");
+/* ---------- Tabs ---------- */
+function handleTabSwitch(tabName) {
+    const isTraining = tabName === 'training';
+    tabTraining.classList.toggle('active', isTraining);
+    tabPhysical.classList.toggle('active', !isTraining);
+    contentTraining.classList.toggle('hidden', !isTraining);
+    contentPhysical.classList.toggle('hidden', isTraining);
+    if (!isTraining) renderPhysicalConfig();
+}
 
-// Inicializa o player de áudio e configura os eventos de clique e "fim de música"
-setupAudioPlayer();
+/* ---------- Init ---------- */
+function init() {
+    setupAudioPlayer();
+    populateDaySelect();
+
+    daySelect.addEventListener('change', (e) => selectDay(e.target.value));
+    tabTraining.addEventListener('click', ()=> handleTabSwitch('training'));
+    tabPhysical.addEventListener('click', ()=> handleTabSwitch('physical'));
+
+    if (!appData.physicalConfig) appData.physicalConfig = { weight:112, height:181, age:29, gender:'male', bmr:0 };
+    renderPhysicalConfig();
+
+    // render initial day
+    selectDay(daySelect.value);
+
+    playPauseButton.disabled = false;
+}
+
+window.addEventListener('load', init);
