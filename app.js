@@ -133,10 +133,10 @@ const dayContent = document.getElementById('dayContent');
 const caloriesRing = document.getElementById('caloriesRing');
 const totalCalEl = document.getElementById('totalCalorias'); // aqui mostra TOTAL (treino + BMR)
 
-const tabTraining = document.getElementById('tabTraining');
-const tabPhysical = document.getElementById('tabPhysical');
-const contentTraining = document.getElementById('contentTraining');
-const contentPhysical = document.getElementById('contentPhysical');
+const tabTraining = document.getElementById("tabTraining");
+const tabPhysical = document.getElementById("tabPhysical");
+const contentTraining = document.getElementById("contentTraining");
+const contentPhysical = document.getElementById("contentPhysical");
 
 const physicalForm = document.getElementById('physicalForm');
 const bmrResult = document.getElementById('bmrResult');
@@ -157,6 +157,32 @@ const currentSongInfo = document.getElementById('currentSongInfo');
 let currentPlaylist = [];
 let currentTrackIndex = 0;
 let isPlaying = false;
+
+function activateTab(tab) {
+    // Remove active de todos
+    document.querySelectorAll(".tab-button").forEach(btn => {
+        btn.classList.remove("active");
+        btn.classList.remove("bg-violet-600", "border-violet-600/50", "text-white");
+        btn.classList.add("text-gray-400");
+    });
+
+    // Adiciona active no selecionado
+    tab.classList.add("active");
+    tab.classList.add("bg-violet-600", "border-violet-600/50", "text-white");
+    tab.classList.remove("text-gray-400");
+}
+
+tabTraining.addEventListener("click", () => {
+    activateTab(tabTraining);
+    contentTraining.classList.remove("hidden");
+    contentPhysical.classList.add("hidden");
+});
+
+tabPhysical.addEventListener("click", () => {
+    activateTab(tabPhysical);
+    contentTraining.classList.add("hidden");
+    contentPhysical.classList.remove("hidden");
+});
 
 /* ---------- Storage helpers ---------- */
 function loadAppData() {
