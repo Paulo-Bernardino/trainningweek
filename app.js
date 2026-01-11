@@ -15,34 +15,6 @@ const treinoData = {
     "Domingo": { isRest: true, icon: "🧘", motivo: "Alongamento e recuperação geral" }
 };
 
-/* ---------- Dados de Dieta ---------- */
-const dietaData = {
-    ON: [
-        { time: "04:30", item: "L-Cartinina 2ml", obs: "Aumentar 1ml a cada 3 dias" },
-        { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" },
-        { time: "08:00", item: "Café 100ml", obs: "Sem açúcar" },
-        { time: "10:00", item: "Café 100ml", obs: "Sem açúcar" },
-        { time: "12:00", item: "Whey Protein (2 scoops)", obs: "60g de proteína" },
-        { time: "14:00", item: "Café 100ml", obs: "Sem açúcar" },
-        { time: "16:00", item: "Whey Protein (2 scoops)", obs: "60g de proteína" },
-        { time: "18:00", item: "Arroz + Frango", obs: "100g Arroz + 200g Frango" },
-        { time: "20:00", item: "5HTP", obs: "5 cápsulas" },
-        { time: "21:30", item: "Gaba 1g", obs: "Antes de dormir" }
-    ],
-    OFF: [
-        { time: "04:30", item: "Mix de Chás", obs: "Hibisco + Cavalinha + Verde (10g cada)" },
-        { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" },
-        { time: "08:00", item: "Café 100ml", obs: "Sem açúcar" },
-        { time: "10:00", item: "Café 100ml", obs: "Sem açúcar" },
-        { time: "12:00", item: "Whey Protein (2 scoops)", obs: "60g de proteína" },
-        { time: "14:00", item: "Café 100ml", obs: "Sem açúcar" },
-        { time: "16:00", item: "Whey Protein (2 scoops)", obs: "60g de proteína" },
-        { time: "18:00", item: "Arroz + Frango", obs: "100g Arroz + 200g Frango" },
-        { time: "20:00", item: "5HTP", obs: "5 cápsulas" },
-        { time: "21:30", item: "Gaba 1g", obs: "Antes de dormir" }
-    ]
-};
-
 /* ---------- Elementos do DOM ---------- */
 const daySelect = document.getElementById('daySelect');
 const dayContent = document.getElementById('dayContent');
@@ -55,89 +27,37 @@ const tabs = {
     physical: { btn: document.getElementById('tabPhysical'), content: document.getElementById('contentPhysical') }
 };
 
-const physicalForm = document.getElementById('physicalForm');
-const bmrValueEl = document.getElementById('bmrValue');
-const bmrResult = document.getElementById('bmrResult');
-
-/* ---------- Lógica de Abas ---------- */
+/* ---------- Navegação de Abas ---------- */
 function switchTab(target) {
     Object.keys(tabs).forEach(key => {
         const isTarget = key === target;
+        // Adiciona/Remove classe ativa no botão
         tabs[key].btn.classList.toggle('active', isTarget);
-        tabs[key].content.classList.toggle('hidden', !isTarget);
+        tabs[key].btn.classList.toggle('text-gray-500', !isTarget);
         
+        // Mostra/Esconde o conteúdo
         if (isTarget) {
-            tabs[key].btn.classList.add('bg-violet-600', 'text-white');
-            tabs[key].btn.classList.remove('text-gray-400');
+            tabs[key].content.classList.remove('hidden');
         } else {
-            tabs[key].btn.classList.remove('bg-violet-600', 'text-white');
-            tabs[key].btn.classList.add('text-gray-400');
+            tabs[key].content.classList.add('hidden');
         }
     });
 
-    if (target === 'diet') renderDiet('ON');
-}
-
-/* ---------- Funções de Dieta ---------- */
-function renderDiet(tipo) {
-    const container = document.getElementById('dietContainer');
-    const btnOn = document.getElementById('btnDietOn');
-    const btnOff = document.getElementById('btnDietOff');
-
-    if (tipo === 'ON') {
-        btnOn.className = "flex-1 py-3 rounded-lg font-bold transition-all bg-violet-600 text-white shadow-lg";
-        btnOff.className = "flex-1 py-3 rounded-lg font-bold transition-all text-gray-400 hover:text-white";
-    } else {
-        btnOff.className = "flex-1 py-3 rounded-lg font-bold transition-all bg-violet-600 text-white shadow-lg";
-        btnOn.className = "flex-1 py-3 rounded-lg font-bold transition-all text-gray-400 hover:text-white";
-    }
-
-    const items = dietaData[tipo];
-    container.innerHTML = items.map((d, index) => `
-        <div id="diet-card-${index}" class="diet-item flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl transition-all duration-300">
-            <div class="flex items-center gap-4 cursor-pointer" onclick="toggleDietItem(${index})">
-                <div class="text-violet-400 font-black text-lg w-12">${d.time}</div>
-                <div>
-                    <div class="font-bold text-white text-base">${d.item}</div>
-                    <div class="text-xs text-gray-500">${d.obs}</div>
-                </div>
-            </div>
-            <input type="checkbox" onchange="toggleDietItem(${index})" id="check-diet-${index}" class="w-6 h-6 rounded-full border-2 border-violet-500 accent-violet-500">
-        </div>
-    `).join('');
-}
-
-function toggleDietItem(index) {
-    const card = document.getElementById(`diet-card-${index}`);
-    const check = document.getElementById(`check-diet-${index}`);
-    if (check.checked) {
-        card.classList.add('diet-done');
-        card.querySelector('.font-bold').classList.add('line-through-text');
-    } else {
-        card.classList.remove('diet-done');
-        card.querySelector('.font-bold').classList.remove('line-through-text');
+    // IMPORTANTE: Renderiza a dieta se mudar para a aba de dieta
+    if (target === 'diet') {
+        renderDiet('ON');
     }
 }
 
 /* ---------- Funções de Treino ---------- */
-function toggleExercise(id) {
-    const checkbox = document.getElementById(id);
-    const card = document.getElementById(`card-${id}`);
-    const title = card.querySelector('strong');
-    
-    if (checkbox.checked) {
-        card.classList.add('exercise-done');
-        title.classList.add('line-through-text');
-    } else {
-        card.classList.remove('exercise-done');
-        title.classList.remove('line-through-text');
-    }
-}
-
 function renderWorkoutDay(dia) {
     const data = treinoData[dia];
     if (data.isRest) {
-        dayContent.innerHTML = `<div class="p-10 text-center bg-white/5 rounded-3xl border border-white/10"><span class="text-6xl">${data.icon}</span><h2 class="text-2xl font-bold mt-4">${data.motivo}</h2></div>`;
+        dayContent.innerHTML = `
+            <div class="p-10 text-center bg-[#1A1B24] rounded-3xl border border-white/5 shadow-2xl">
+                <span class="text-7xl block mb-4">${data.icon}</span>
+                <h2 class="text-2xl font-black italic tracking-tighter">${data.motivo}</h2>
+            </div>`;
         updateRingAndTotal(0);
         return;
     }
@@ -147,47 +67,50 @@ function renderWorkoutDay(dia) {
     const totalCal = lista.reduce((s, ex) => s + (Number(ex.calorias) || 0), 0);
 
     dayContent.innerHTML = `
-        <div class="p-6 rounded-3xl bg-gradient-to-br ${data.cor} border border-white/10 shadow-2xl">
-            <div class="flex items-center gap-4 mb-6">
-                <span class="text-5xl">${data.icon}</span>
-                <div>
-                    <h2 class="text-2xl font-black">${dia}</h2>
-                    <p class="text-sm opacity-70">Foco: ${data.grupo}</p>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4 mb-6 py-4 border-y border-white/10 text-center">
-                <div><p class="text-[10px] uppercase opacity-50">Tempo</p><p class="font-bold text-cyan-300">${data.tempoMock}</p></div>
-                <div><p class="text-[10px] uppercase opacity-50">Calorias</p><p class="font-bold text-pink-400">${totalCal} kcal</p></div>
-            </div>
-            <div class="space-y-3">
-                ${lista.map((ex, i) => `
-                    <div id="card-ex-${i}" class="p-4 bg-black/20 rounded-xl flex items-center justify-between group transition-all">
-                        <div class="flex items-center gap-4 flex-grow cursor-pointer" onclick="document.getElementById('check-ex-${i}').click()">
-                            <input type="checkbox" id="check-ex-${i}" onchange="toggleExercise('check-ex-${i}')" class="w-5 h-5 rounded-full accent-violet-500">
-                            <div>
-                                <strong class="block text-sm transition-all">${ex.nome}</strong>
-                                <span class="text-[10px] opacity-60">${ex.series} series • ${ex.reps} reps</span>
+        <div class="space-y-3">
+            ${lista.map((ex, i) => `
+                <div class="bg-[#1A1B24] p-4 rounded-2xl border border-white/5 flex items-center justify-between group transition-all hover:bg-[#1f202b]">
+                    <label class="relative flex items-center cursor-pointer flex-grow">
+                        <input type="checkbox" class="task-check hidden peer">
+                        
+                        <div class="w-7 h-7 border-2 border-violet-500/50 rounded-lg flex items-center justify-center peer-checked:bg-violet-500 peer-checked:border-violet-500 transition-all shadow-lg shadow-violet-500/0 peer-checked:shadow-violet-500/20">
+                            <i class="fas fa-check text-white text-[10px] scale-0 peer-checked:scale-100 transition-transform"></i>
+                        </div>
+
+                        <div class="ml-4 task-text flex-grow">
+                            <div class="flex items-center justify-between mb-1">
+                                <strong class="text-sm font-bold text-gray-100 tracking-tight">${ex.nome}</strong>
+                                <span class="kcal-tag">${ex.calorias} kcal</span>
+                            </div>
+                            <div class="flex gap-3">
+                                <span class="text-[10px] font-black text-violet-400 uppercase tracking-tighter">
+                                    <i class="fas fa-layer-group mr-1"></i>${ex.series} Séries
+                                </span>
+                                <span class="text-[10px] font-black text-cyan-400 uppercase tracking-tighter">
+                                    <i class="fas fa-redo mr-1"></i>${ex.reps} Reps
+                                </span>
                             </div>
                         </div>
-                        ${ex.url ? `<button onclick="window.open('${ex.url}')" class="text-violet-400 p-2"><i class="fas fa-play"></i></button>` : ''}
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    `;
+                    </label>
+                </div>`).join('')}
+        </div>`;
+
     updateRingAndTotal(totalCal);
 }
 
-/* ---------- Cálculos e Persistência de Dados ---------- */
+/* ---------- Cálculos e Basal ---------- */
 function updateRingAndTotal(trainingCal) {
-    // Busca dados salvos para o cálculo
     const savedData = JSON.parse(localStorage.getItem('iTrainPhysical')) || { bmr: 0 };
-    const total = trainingCal + savedData.bmr;
-    totalCalEl.textContent = total;
+    const total = trainingCal + (Number(savedData.bmr) || 0);
+    
+    // Animação numérica simples
+    totalCalEl.textContent = total.toLocaleString('pt-BR');
 
-    const circumference = 440;
-    const goal = 3500; 
-    const offset = circumference - (Math.min(total / goal, 1) * circumference);
+    const circumference = 440; // Mesmo valor do stroke-dasharray no HTML
+    const goal = 3500; // Meta diária de queima
+    const progress = Math.min(total / goal, 1);
+    const offset = circumference - (progress * circumference);
+    
     caloriesRing.style.strokeDashoffset = offset;
 }
 
@@ -197,19 +120,31 @@ function saveAndCalculatePhysical() {
     const a = parseInt(document.getElementById('age').value);
     const g = document.getElementById('gender').value;
 
+    if(!w || !h || !a) {
+        alert("Preencha todos os campos para calcular!");
+        return;
+    }
+
+    // Equação de Mifflin-St Jeor
     let bmr = (10 * w) + (6.25 * h) - (5 * a);
     bmr += (g === 'male' ? 5 : -161);
     bmr = Math.round(bmr);
 
-    // Salva TUDO em um objeto só para carregar depois
-    const physicalData = { weight: w, height: h, age: a, gender: g, bmr: bmr };
-    localStorage.setItem('iTrainPhysical', JSON.stringify(physicalData));
+    // Salva no LocalStorage
+    localStorage.setItem('iTrainPhysical', JSON.stringify({ 
+        weight: w, height: h, age: a, gender: g, bmr: bmr 
+    }));
 
-    // UI Update
-    bmrValueEl.textContent = bmr;
-    bmrResult.classList.remove('hidden');
+    // Exibe o resultado
+    const bmrValueEl = document.getElementById('bmrValue');
+    const bmrResultContainer = document.getElementById('bmrResult');
     
-    // Recalcula o total do dia com o novo basal
+    if (bmrValueEl && bmrResultContainer) {
+        bmrValueEl.textContent = bmr.toLocaleString('pt-BR');
+        bmrResultContainer.classList.remove('hidden');
+    }
+
+    // Atualiza o anel de calorias na Home
     renderWorkoutDay(daySelect.value);
 }
 
@@ -217,37 +152,73 @@ function loadPhysicalData() {
     const saved = localStorage.getItem('iTrainPhysical');
     if (saved) {
         const data = JSON.parse(saved);
-        // Preenche os inputs
-        document.getElementById('weight').value = data.weight;
-        document.getElementById('height').value = data.height;
-        document.getElementById('age').value = data.age;
-        document.getElementById('gender').value = data.gender;
+        if(document.getElementById('weight')) document.getElementById('weight').value = data.weight;
+        if(document.getElementById('height')) document.getElementById('height').value = data.height;
+        if(document.getElementById('age')) document.getElementById('age').value = data.age;
+        if(document.getElementById('gender')) document.getElementById('gender').value = data.gender;
         
-        // Mostra o resultado do BMR
-        bmrValueEl.textContent = data.bmr;
-        bmrResult.classList.remove('hidden');
+        const bmrValueEl = document.getElementById('bmrValue');
+        const bmrResultContainer = document.getElementById('bmrResult');
+        
+        if (bmrValueEl && bmrResultContainer) {
+            bmrValueEl.textContent = data.bmr.toLocaleString('pt-BR');
+            bmrResultContainer.classList.remove('hidden');
+        }
     }
+}
+
+/* ---------- Dieta ---------- */
+const dietaData = { 
+    ON: [ { time: "04:30", item: "L-Cartinina 2ml", obs: "Aumentar 1ml a cada 3 dias" }, { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" }, { time: "08:00", item: "Café 100ml", obs: "Sem açúcar" }, { time: "12:00", item: "Whey Protein", obs: "60g de proteína" }, { time: "18:00", item: "Arroz + Frango", obs: "100g Arroz + 200g Frango" }, { time: "21:30", item: "Gaba 1g", obs: "Dormir" } ], 
+    OFF: [ { time: "04:30", item: "Mix de Chás", obs: "Hibisco + Cavalinha" }, { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" }, { time: "12:00", item: "Whey Protein", obs: "60g de proteína" }, { time: "18:00", item: "Arroz + Frango", obs: "100g Arroz + 200g Frango" } ] 
+};
+
+function renderDiet(tipo) {
+    const container = document.getElementById('dietContainer');
+    const btnOn = document.getElementById('btnDietOn');
+    const btnOff = document.getElementById('btnDietOff');
+
+    // Estilo dos botões da dieta
+    btnOn.className = `flex-1 py-3 rounded-xl font-black transition-all text-xs ${tipo==='ON'?'bg-violet-600 text-white shadow-lg shadow-violet-500/30':'text-gray-500 bg-black/20'}`;
+    btnOff.className = `flex-1 py-3 rounded-xl font-black transition-all text-xs ${tipo==='OFF'?'bg-violet-600 text-white shadow-lg shadow-violet-500/30':'text-gray-500 bg-black/20'}`;
+
+    container.innerHTML = dietaData[tipo].map((d, i) => `
+        <div class="flex items-center justify-between p-5 bg-[#1A1B24] border border-white/5 rounded-2xl group">
+            <label class="flex items-center gap-5 cursor-pointer flex-grow">
+                <input type="checkbox" class="task-check hidden peer">
+                <div class="w-6 h-6 border-2 border-violet-500/50 rounded-full flex items-center justify-center peer-checked:bg-violet-500 peer-checked:border-violet-500 transition-all">
+                    <i class="fas fa-check text-white text-[8px] scale-0 peer-checked:scale-100 transition-transform"></i>
+                </div>
+                <div class="task-text transition-all">
+                    <div class="text-violet-400 font-black text-xs uppercase tracking-tighter mb-1">${d.time}</div>
+                    <div class="font-bold text-white">${d.item}</div>
+                    <div class="text-[10px] text-gray-500 font-medium">${d.obs}</div>
+                </div>
+            </label>
+        </div>`).join('');
 }
 
 /* ---------- Inicialização ---------- */
 function init() {
+    // Popula o Select
     daySelect.innerHTML = Object.keys(treinoData).map(d => `<option value="${d}">${d}</option>`).join('');
     
+    // Listeners das Abas
     tabs.training.btn.addEventListener('click', () => switchTab('training'));
     tabs.diet.btn.addEventListener('click', () => switchTab('diet'));
     tabs.physical.btn.addEventListener('click', () => switchTab('physical'));
-
-    physicalForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        saveAndCalculatePhysical();
+    
+    // Form físico
+    document.getElementById('physicalForm').addEventListener('submit', (e) => { 
+        e.preventDefault(); 
+        saveAndCalculatePhysical(); 
     });
 
+    // Change do dia
     daySelect.addEventListener('change', (e) => renderWorkoutDay(e.target.value));
 
-    // 1. Carrega os dados físicos primeiro
+    // Start
     loadPhysicalData();
-    
-    // 2. Renderiza o treino (que já vai ler o BMR carregado acima)
     renderWorkoutDay(daySelect.value);
 }
 
