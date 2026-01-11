@@ -11,8 +11,17 @@
     <style>
         .font-sans { font-family: 'Inter', sans-serif; }
         .ring-progress { transition: stroke-dashoffset 1s ease-in-out; stroke-linecap: round; }
-        .tab-button.active { box-shadow: 0 0 15px rgba(168,85,247,0.5); border-color: #A855F7; }
-        .tab-button { transition: all 0.3s; }
+        
+        /* Efeito nas abas */
+        .tab-button.active { 
+            box-shadow: 0 0 15px rgba(168,85,247,0.4); 
+            border-color: #A855F7; 
+            background-color: #9333ea; /* violet-600 */
+            color: white;
+        }
+        .tab-button { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* Estilização Inputs */
         .input-group input, .input-group select {
             background-color: #1A1B24;
             border: 1px solid #ffffff1a;
@@ -26,114 +35,155 @@
             box-shadow: 0 0 0 3px rgba(168,85,247,0.3);
             border-color: #A855F7;
         }
+
+        /* Efeito de Checklist Premium */
+        .exercise-done, .diet-done {
+            opacity: 0.4;
+            filter: grayscale(0.7);
+        }
+        .line-through-text { text-decoration: line-through; color: #9ca3af; }
+
+        /* Timeline da Dieta */
+        .diet-item {
+            position: relative;
+            padding-left: 1.5rem;
+            border-left: 2px solid rgba(168, 85, 247, 0.2);
+        }
+        .diet-item::before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 1.5rem;
+            width: 12px;
+            height: 12px;
+            background: #A855F7;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+        }
     </style>
 </head>
 
-<body class="text-white font-sans p-6 pb-32">
+<body class="text-white font-sans p-6 pb-40">
     <main class="max-w-xl mx-auto">
+        
         <header class="text-center mb-9">
             <h1 class="text-5xl font-extrabold leading-[1.3] bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-2xl">
                 Trainning Week
             </h1>
         </header>
 
-        <!-- Ring -->
         <div class="flex justify-center mb-6">
             <div class="relative w-40 h-40">
                 <svg class="transform -rotate-90" width="160" height="160" viewBox="0 0 160 160">
-                    <circle cx="80" cy="80" r="70" stroke="#22232F" stroke-width="15" fill="none" />
-                    <circle id="caloriesRing" cx="80" cy="80" r="70" stroke="#A855F7" stroke-width="15"
+                    <circle cx="80" cy="80" r="70" stroke="#22232F" stroke-width="12" fill="none" />
+                    <circle id="caloriesRing" cx="80" cy="80" r="70" stroke="#A855F7" stroke-width="12"
                         fill="none" class="ring-progress" stroke-dasharray="440" stroke-dashoffset="440"></circle>
                 </svg>
                 <div class="absolute inset-0 flex items-center justify-center flex-col">
                     <span class="text-4xl font-extrabold" id="totalCalorias">0</span>
-                    <span class="text-sm text-gray-400 tracking-wider mt-1">kcal Gastas</span>
+                    <span class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">kcal Total</span>
                 </div>
             </div>
         </div>
 
         <hr class="border-t border-white/5 mb-8">
 
-        <!-- Tabs -->
-        <div class="flex justify-around bg-[#1A1B24] p-2 rounded-2xl mb-8 shadow-inner border border-white/5">
-            <button id="tabTraining" class="tab-button active flex-1 py-3 px-4 text-center text-lg font-semibold rounded-xl bg-violet-600 border border-violet-600/50" data-tab="training">
-                <i class="fas fa-dumbbell mr-2"></i> Treino
+        <div class="flex justify-around bg-[#1A1B24] p-1.5 rounded-2xl mb-8 shadow-inner border border-white/5">
+            <button id="tabTraining" class="tab-button active flex-1 py-3 px-2 text-center text-sm font-bold rounded-xl">
+                <i class="fas fa-dumbbell mr-2"></i> TREINO
             </button>
-            <button id="tabPhysical" class="tab-button flex-1 py-3 px-4 text-center text-lg font-semibold rounded-xl text-gray-400 hover:bg-[#22232F]" data-tab="physical">
-                <i class="fas fa-user-gear mr-2"></i> Físico
+            <button id="tabDiet" class="tab-button flex-1 py-3 px-2 text-center text-sm font-bold rounded-xl text-gray-400 hover:text-white">
+                <i class="fas fa-utensils mr-2"></i> DIETA
+            </button>
+            <button id="tabPhysical" class="tab-button flex-1 py-3 px-2 text-center text-sm font-bold rounded-xl text-gray-400 hover:text-white">
+                <i class="fas fa-user-gear mr-2"></i> FÍSICO
             </button>
         </div>
 
-        <!-- Training Content -->
         <div id="contentTraining">
             <div class="mb-8">
-                <label for="daySelect" class="block text-lg font-semibold mb-3 text-gray-300">📅 Escolha o Dia do Treino</label>
+                <label for="daySelect" class="block text-sm font-semibold mb-3 text-gray-400 uppercase tracking-wider">📅 Selecione o Dia</label>
                 <div class="relative">
                     <select id="daySelect"
-                        class="w-full bg-[#1A1B24] border border-white/10 text-white px-5 py-4 rounded-xl shadow-2xl text-xl font-bold focus:ring-4 focus:ring-violet-500/50 focus:border-violet-500 transition duration-300 appearance-none cursor-pointer">
+                        class="w-full bg-[#1A1B24] border border-white/10 text-white px-5 py-4 rounded-xl shadow-2xl text-xl font-bold focus:ring-2 focus:ring-violet-500 appearance-none cursor-pointer">
                     </select>
-                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                        <svg width="24" height="24" fill="#6B7280" viewBox="0 0 24 24">
-                            <path d="M7 10l5 5 5-5z"></path>
-                        </svg>
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-violet-500">
+                        <i class="fas fa-chevron-down"></i>
                     </div>
                 </div>
             </div>
-
             <div id="dayContent" class="space-y-6"></div>
         </div>
 
-        <!-- Physical Content -->
-        <div id="contentPhysical" class="hidden">
-            <h2 class="text-2xl font-bold mb-6 text-violet-400">📊 Configuração Física e TMB</h2>
-            <form id="physicalForm" class="space-y-6">
-                <div class="input-group">
-                    <label for="weight" class="block text-sm font-medium text-gray-300 mb-2">⚖️ Peso (kg)</label>
-                    <input type="number" id="weight" value="112" min="1" required class="w-full">
-                </div>
-                <div class="input-group">
-                    <label for="height" class="block text-sm font-medium text-gray-300 mb-2">📏 Altura (cm)</label>
-                    <input type="number" id="height" value="181" min="1" required class="w-full">
-                </div>
-                <div class="input-group">
-                    <label for="age" class="block text-sm font-medium text-gray-300 mb-2">🎂 Idade (anos)</label>
-                    <input type="number" id="age" value="29" min="1" required class="w-full">
-                </div>
-                <div class="input-group">
-                    <label for="gender" class="block text-sm font-medium text-gray-300 mb-2">👤 Gênero</label>
-                    <select id="gender" required class="w-full">
-                        <option value="male">Homem</option>
-                        <option value="female">Mulher</option>
-                    </select>
-                </div>
-                <div class="pt-4">
-                    <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-600 text-[#0D0E14] font-bold py-4 rounded-xl shadow-lg transition duration-300 transform hover:scale-[1.01] text-lg">
-                        Calcular TMB e Salvar <i class="fas fa-calculator ml-2"></i>
+        <div id="contentDiet" class="hidden animate-fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold mb-4 text-violet-400">🥗 Plano Alimentar</h2>
+                <div class="flex bg-[#1A1B24] p-1 rounded-xl border border-white/10">
+                    <button id="btnDietOn" onclick="renderDiet('ON')" class="flex-1 py-3 rounded-lg font-bold transition-all duration-300 text-sm">
+                        15 DAYS ON
+                    </button>
+                    <button id="btnDietOff" onclick="renderDiet('OFF')" class="flex-1 py-3 rounded-lg font-bold transition-all duration-300 text-sm">
+                        15 DAYS OFF
                     </button>
                 </div>
+            </div>
+            <div id="dietContainer" class="space-y-4">
+                </div>
+        </div>
+
+        <div id="contentPhysical" class="hidden">
+            <h2 class="text-2xl font-bold mb-6 text-violet-400">📊 Seus Dados</h2>
+            <form id="physicalForm" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="input-group">
+                        <label class="block text-xs font-medium text-gray-400 mb-2 uppercase">Peso (kg)</label>
+                        <input type="number" id="weight" value="112" class="w-full">
+                    </div>
+                    <div class="input-group">
+                        <label class="block text-xs font-medium text-gray-400 mb-2 uppercase">Altura (cm)</label>
+                        <input type="number" id="height" value="181" class="w-full">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="input-group">
+                        <label class="block text-xs font-medium text-gray-400 mb-2 uppercase">Idade</label>
+                        <input type="number" id="age" value="29" class="w-full">
+                    </div>
+                    <div class="input-group">
+                        <label class="block text-xs font-medium text-gray-400 mb-2 uppercase">Gênero</label>
+                        <select id="gender" class="w-full">
+                            <option value="male">Homem</option>
+                            <option value="female">Mulher</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-4 rounded-xl shadow-lg transition duration-300 mt-4 uppercase tracking-widest text-sm">
+                    Atualizar Metabolismo <i class="fas fa-sync-alt ml-2"></i>
+                </button>
             </form>
 
-            <div id="bmrResult" class="mt-8 p-6 bg-[#1A1B24] rounded-xl border border-violet-500/20 shadow-2xl hidden">
-                <h3 class="text-xl font-semibold mb-2 text-violet-300">Sua Taxa de Metabolismo Basal (TMB)</h3>
-                <p class="text-4xl font-extrabold text-cyan-400" id="bmrValue">0 kcal/dia</p>
-                <p class="text-sm text-gray-400 mt-2">Esta é a caloria mínima que seu corpo queima em repouso. Use-a como base para sua dieta!</p>
+            <div id="bmrResult" class="mt-8 p-6 bg-gradient-to-br from-[#1A1B24] to-[#12131a] rounded-2xl border border-violet-500/20 shadow-2xl hidden text-center">
+                <h3 class="text-gray-400 text-sm uppercase mb-2">Seu Basal (TMB)</h3>
+                <p class="text-5xl font-black text-cyan-400" id="bmrValue">0</p>
+                <p class="text-[10px] text-gray-500 mt-3 leading-relaxed">Calorias que seu corpo queima naturalmente em repouso absoluto.</p>
             </div>
         </div>
     </main>
 
-    <!-- Message Box -->
-    <div id="messageBox" class="fixed top-4 left-1/2 -translate-x-1/2 p-4 rounded-xl bg-green-600 text-white shadow-xl transition-opacity duration-300 opacity-0 hidden z-[100]"></div>
-
-    <!-- Audio / Player Bar -->
     <audio id="treinoAudioPlayer" preload="auto"></audio>
-    <div class="fixed bottom-0 left-0 right-0 p-4 bg-[#1A1B24] border-t border-white/10 shadow-2xl z-50">
+    <div class="fixed bottom-0 left-0 right-0 p-4 bg-[#1A1B24]/90 backdrop-blur-xl border-t border-white/10 shadow-2xl z-50">
         <div class="max-w-xl mx-auto flex items-center justify-between">
-            <div id="currentSongInfo" class="text-sm"><span class="text-gray-400">Pronto para tocar.</span></div>
-            <button id="playPauseButton" class="bg-violet-600 hover:bg-violet-700 text-white p-4 rounded-full shadow-lg transition duration-300 transform hover:scale-105 ml-5">
-                <i class="fas fa-play text-xl" id="playPauseIcon"></i>
+            <div id="currentSongInfo" class="text-xs truncate max-w-[200px]">
+                <span class="text-gray-500 uppercase tracking-tighter italic">Player Pronto</span>
+            </div>
+            <button id="playPauseButton" class="bg-violet-600 hover:bg-violet-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all active:scale-90">
+                <i class="fas fa-play text-lg" id="playPauseIcon"></i>
             </button>
         </div>
     </div>
-    <script src="app.js?v=1"></script>
+
+    <div id="messageBox" class="fixed top-6 left-1/2 -translate-x-1/2 p-4 rounded-2xl text-white shadow-2xl transition-all duration-300 opacity-0 hidden z-[100] font-bold text-sm"></div>
+
+    <script src="app.js?v=2"></script>
 </body>
 </html>
