@@ -170,7 +170,7 @@ function loadPhysicalData() {
 /* ---------- Dieta ---------- */
 const dietaData = { 
     ON: [ { time: "04:30", item: "L-Cartinina 2ml", obs: "Aumentar 1ml a cada 3 dias" }, { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" }, { time: "08:00", item: "Café 100ml", obs: "Sem açúcar" }, { time: "12:00", item: "Whey Protein", obs: "60g de proteína" }, { time: "18:00", item: "Arroz + Frango", obs: "100g Arroz + 200g Frango" }, { time: "21:30", item: "Gaba 1g", obs: "Dormir" } ], 
-    OFF: [ { time: "04:30", item: "Mix de Chás", obs: "Hibisco + Cavalinha" }, { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" }, { time: "12:00", item: "Whey Protein", obs: "60g de proteína" }, { time: "18:00", item: "Arroz + Frango", obs: "100g Arroz + 200g Frango" } ] 
+    OFF: [ { time: "04:30", item: "Mix de Chás", obs: "Hibisco + Cavalinha + Chá Verde" }, { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" }, { time: "12:00", item: "Whey Protein", obs: "60g de proteína" }, { time: "18:00", item: "Arroz + Frango", obs: "100g Arroz + 200g Frango" } ] 
 };
 
 function renderDiet(tipo) {
