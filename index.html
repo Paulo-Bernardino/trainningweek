@@ -86,12 +86,12 @@
         </div>
 
         <div id="contentDiet" class="hidden space-y-6">
-            <div class="flex bg-[#1A1B24] p-1.5 rounded-2xl border border-white/5">
-                <button id="btnDietOn" onclick="renderDiet('ON')" class="flex-1 py-3 rounded-xl font-black text-xs">DIETA ON</button>
-                <button id="btnDietOff" onclick="renderDiet('OFF')" class="flex-1 py-3 rounded-xl font-black text-xs text-gray-500">DIETA OFF</button>
-            </div>
-            <div id="dietContainer" class="space-y-3"></div>
-        </div>
+    <div class="flex bg-[#1A1B24] p-1.5 rounded-2xl border border-white/5">
+        <button id="btnDietOn" class="flex-1 py-3 rounded-xl font-black text-xs">DIETA ON</button>
+        <button id="btnDietOff" class="flex-1 py-3 rounded-xl font-black text-xs text-gray-500">DIETA OFF</button>
+    </div>
+    <div id="dietContainer" class="space-y-3"></div>
+</div>
 
         <div id="contentPhysical" class="hidden space-y-6">
             <form id="physicalForm" class="space-y-4">
@@ -126,11 +126,23 @@
     </main>
 
     <footer class="fixed bottom-6 left-4 right-4 max-w-xl mx-auto z-50">
-        <div class="bg-[#1A1B24]/90 backdrop-blur-2xl p-4 rounded-[2.5rem] border border-white/10 shadow-2xl flex items-center justify-between">
-            <div id="currentSongInfo" class="ml-4"><p class="text-xs font-black uppercase tracking-widest">Treino Ativo</p></div>
-            <button id="playPauseButton" class="bg-white text-black w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-90"><i class="fas fa-play" id="playPauseIcon"></i></button>
+    <div class="bg-[#1A1B24]/90 backdrop-blur-2xl p-4 rounded-[2.5rem] border border-white/10 shadow-2xl flex items-center justify-between">
+        
+        <div id="currentSongInfo" class="ml-4 flex items-center gap-3">
+            <div id="music-wave" class="hidden">
+                <i class="fas fa-wave-square text-violet-400 animate-pulse"></i>
+            </div>
+            <div>
+                <p id="songTitle" class="text-xs font-black uppercase tracking-widest text-white">Treino Ativo</p>
+                <p id="stationName" class="text-[9px] text-gray-500 uppercase font-bold tracking-tighter">Radio Meet Phonk</p>
+            </div>
         </div>
-    </footer>
+
+        <button id="playPauseButton" class="bg-white text-black w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+            <i class="fas fa-play" id="playPauseIcon"></i>
+        </button>
+    </div>
+</footer>
 
     <script>
         const scriptToLoad = localStorage.getItem('userScript');
