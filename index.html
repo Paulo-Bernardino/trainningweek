@@ -3,48 +3,54 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TRAINN</title>
+    <title>TRAINN | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .task-check:checked + .task-text, .task-check:checked + .task-text * {
+        .task-check:checked ~ .task-text,
+        .task-check:checked ~ .task-text strong,
+        .task-check:checked ~ .task-text span,
+        .task-check:checked ~ .task-text .kcal-tag {
             text-decoration: line-through;
-            opacity: 0.5;
-            color: #A855F7;
+            opacity: 0.4;
+            color: #A855F7 !important;
+            transition: all 0.3s ease;
         }
         .tab-button.active {
             background-color: #A855F7;
             color: white;
             box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
         }
-        /* Efeito de riscar TUDO dentro do label quando o checkbox for marcado */
-.task-check:checked ~ .task-text,
-.task-check:checked ~ .task-text strong,
-.task-check:checked ~ .task-text span,
-.task-check:checked ~ .task-text .kcal-tag {
-    text-decoration: line-through;
-    opacity: 0.4;
-    color: #A855F7 !important; /* Cor violeta suave ao riscar */
-    transition: all 0.3s ease;
-}
-
-/* Estilo para as tags de calorias por exercício */
-.kcal-tag {
-    background: rgba(168, 85, 247, 0.1);
-    border: 1px solid rgba(168, 85, 247, 0.2);
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 10px;
-    font-weight: 800;
-    color: #A855F7;
-}
+        .kcal-tag {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            color: #A855F7;
+        }
     </style>
 </head>
 <body class="text-white font-sans p-4 pb-32">
     <main class="max-w-xl mx-auto">
+        
+        <div class="flex justify-between items-center mb-6 bg-[#1A1B24]/30 p-3 rounded-2xl border border-white/5">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                    Bem-vindo, <span id="top-username" class="text-violet-400">Usuário</span>
+                </span>
+            </div>
+            <button onclick="logout()" class="text-[10px] font-black text-gray-500 hover:text-red-400 transition-colors uppercase tracking-widest flex items-center gap-2">
+                Sair <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+
         <header class="text-center mb-8 pt-4">
             <h1 class="text-4xl font-black bg-gradient-to-r from-violet-400 to-cyan-300 bg-clip-text text-transparent italic tracking-tighter">TRAINN</h1>
+            <p id="welcome-msg" class="text-[10px] text-gray-500 uppercase font-bold tracking-[0.2em] mt-2"></p>
         </header>
 
         <div class="flex justify-center mb-10">
@@ -112,22 +118,45 @@
                 </div>
                 <button type="submit" class="w-full bg-violet-600 p-5 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-violet-500/20 active:scale-95 transition-all">Atualizar Metabolismo</button>
             </form>
-
             <div id="bmrResult" class="hidden p-8 bg-gradient-to-br from-[#1A1B24] to-black rounded-3xl border border-violet-500/30 text-center">
                 <p class="text-[10px] uppercase font-bold text-gray-400 mb-2">Seu Basal (TMB)</p>
                 <div class="text-5xl font-black text-cyan-400" id="bmrValue">0</div>
-                <p class="text-xs text-gray-500 mt-4 italic">Calorias que seu corpo queima em repouso.</p>
             </div>
         </div>
     </main>
 
     <footer class="fixed bottom-6 left-4 right-4 max-w-xl mx-auto z-50">
         <div class="bg-[#1A1B24]/90 backdrop-blur-2xl p-4 rounded-[2.5rem] border border-white/10 shadow-2xl flex items-center justify-between">
-            <div id="currentSongInfo" class="ml-4"><p class="text-xs font-black uppercase">Treino TRAINN</p></div>
+            <div id="currentSongInfo" class="ml-4"><p class="text-xs font-black uppercase tracking-widest">Treino Ativo</p></div>
             <button id="playPauseButton" class="bg-white text-black w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-90"><i class="fas fa-play" id="playPauseIcon"></i></button>
         </div>
     </footer>
 
-    <script src="app.js"></script>
+    <script>
+        const scriptToLoad = localStorage.getItem('userScript');
+        const userName = localStorage.getItem('userName');
+
+        if (!scriptToLoad) {
+            window.location.href = 'login.html';
+        } else {
+            // Injeta o nome no Topo e no Header
+            const formattedName = userName.replace('_', ' ').toUpperCase();
+            document.getElementById('top-username').innerText = formattedName;
+            document.getElementById('welcome-msg').innerText = `WORKOUT: ${formattedName}`;
+
+            // Carrega o script específico
+            const scriptTag = document.createElement('script');
+            scriptTag.src = scriptToLoad; 
+            scriptTag.onload = () => {
+                if (typeof init === 'function') init();
+            };
+            document.body.appendChild(scriptTag);
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+    </script>
 </body>
 </html>
