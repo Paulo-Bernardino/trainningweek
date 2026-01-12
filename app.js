@@ -139,11 +139,32 @@ function updateRingAndTotal(trainingCal) {
 }
 
 /* ---------- Dieta ---------- */
-const dietaData = { 
-    ON: [ { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" }, { time: "12:00", item: "Whey Protein", obs: "60g de proteína" }, { time: "18:00", item: "Arroz + Frango", obs: "200g Frango" } ], 
-    OFF: [ { time: "08:00", item: "Ovos Mexidos", obs: "3 unidades" }, { time: "20:00", item: "Refeição Livre", obs: "Moderada" } ] 
+const dietaData = {
+    ON: [
+        { time: "04:30", item: "L-Cartinina 2ml", obs: "Aumentar 1ml a cada 3 dias" },
+        { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" },
+        { time: "08:00", item: "Café 100ml", obs: "Sem açúcar" },
+        { time: "10:00", item: "Café 100ml", obs: "Sem açúcar" },
+        { time: "12:00", item: "Whey Protein (2 scoops)", obs: "60g de proteína" },
+        { time: "14:00", item: "Café 100ml", obs: "Sem açúcar" },
+        { time: "16:00", item: "Whey Protein (2 scoops)", obs: "60g de proteína" },
+        { time: "18:00", item: "Arroz + Frango", obs: "100g Arroz + 200g Frango" },
+        { time: "20:00", item: "5HTP", obs: "5 cápsulas" },
+        { time: "21:30", item: "Gaba 1g", obs: "Antes de dormir" }
+    ],
+    OFF: [
+        { time: "04:30", item: "Mix de Chás", obs: "Hibisco + Cavalinha + Verde (10g cada)" },
+        { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" },
+        { time: "08:00", item: "Café 100ml", obs: "Sem açúcar" },
+        { time: "10:00", item: "Café 100ml", obs: "Sem açúcar" },
+        { time: "12:00", item: "Whey Protein (2 scoops)", obs: "60g de proteína" },
+        { time: "14:00", item: "Café 100ml", obs: "Sem açúcar" },
+        { time: "16:00", item: "Whey Protein (2 scoops)", obs: "60g de proteína" },
+        { time: "18:00", item: "Arroz + Frango", obs: "100g Arroz + 200g Frango" },
+        { time: "20:00", item: "5HTP", obs: "5 cápsulas" },
+        { time: "21:30", item: "Gaba 1g", obs: "Antes de dormir" }
+    ]
 };
-
 function renderDiet(tipo) {
     const container = document.getElementById('dietContainer');
     const btnOn = document.getElementById('btnDietOn');
