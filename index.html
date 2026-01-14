@@ -8,14 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .task-check:checked ~ .task-text,
         .task-check:checked ~ .task-text strong,
         .task-check:checked ~ .task-text span,
         .task-check:checked ~ .task-text .kcal-tag {
             text-decoration: line-through;
             opacity: 0.4;
             color: #A855F7 !important;
-            transition: all 0.3s ease;
         }
         .tab-button.active {
             background-color: #A855F7;
@@ -31,6 +29,10 @@
             font-weight: 800;
             color: #A855F7;
         }
+        /* Animação suave para modais */
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="text-white font-sans p-4 pb-32">
@@ -48,7 +50,7 @@
             </button>
         </div>
 
-        <header class="text-center mb-8 pt-4">
+        <header class="text-center mb-8">
             <h1 class="text-4xl font-black bg-gradient-to-r from-violet-400 to-cyan-300 bg-clip-text text-transparent italic tracking-tighter">TRAINN</h1>
             <p id="welcome-msg" class="text-[10px] text-gray-500 uppercase font-bold tracking-[0.2em] mt-2"></p>
         </header>
@@ -68,13 +70,13 @@
 
         <nav class="flex justify-around bg-[#1A1B24]/50 backdrop-blur-md p-1.5 rounded-2xl mb-8 border border-white/5 sticky top-4 z-40">
             <button id="tabTraining" class="tab-button active flex-1 py-3 px-2 text-center text-xs font-black rounded-xl transition-all">
-                <i class="fas fa-dumbbell mb-1 block text-lg"></i> TREINO
+                TREINO
             </button>
             <button id="tabDiet" class="tab-button flex-1 py-3 px-2 text-center text-xs font-black rounded-xl text-gray-500 transition-all">
-                <i class="fas fa-utensils mb-1 block text-lg"></i> DIETA
+                DIETA
             </button>
             <button id="tabPhysical" class="tab-button flex-1 py-3 px-2 text-center text-xs font-black rounded-xl text-gray-500 transition-all">
-                <i class="fas fa-chart-line mb-1 block text-lg"></i> FÍSICO
+                FÍSICO
             </button>
         </nav>
 
@@ -86,15 +88,19 @@
         </div>
 
         <div id="contentDiet" class="hidden space-y-6">
-    <div class="flex bg-[#1A1B24] p-1.5 rounded-2xl border border-white/5">
-        <button id="btnDietOn" class="flex-1 py-3 rounded-xl font-black text-xs">DIETA ON</button>
-        <button id="btnDietOff" class="flex-1 py-3 rounded-xl font-black text-xs text-gray-500">DIETA OFF</button>
-    </div>
-    <div id="dietContainer" class="space-y-3"></div>
-</div>
+            <button onclick="openDietModal()" class="w-full py-4 bg-violet-600/10 border border-violet-500/20 rounded-2xl text-violet-400 font-black text-xs uppercase tracking-widest">
+                <i class="fas fa-plus mr-2"></i> Adicionar Item
+            </button>
+
+            <div class="flex bg-[#1A1B24] p-1.5 rounded-2xl border border-white/5">
+                <button id="btnDietOn" onclick="renderDiet('ON')" class="flex-1 py-3 rounded-xl font-black text-xs">DIETA ON</button>
+                <button id="btnDietOff" onclick="renderDiet('OFF')" class="flex-1 py-3 rounded-xl font-black text-xs">DIETA OFF</button>
+            </div>
+            <div id="dietContainer" class="space-y-3"></div>
+        </div>
 
         <div id="contentPhysical" class="hidden space-y-6">
-            <form id="physicalForm" class="space-y-4">
+            <form id="physicalForm" class="space-y-4" onsubmit="event.preventDefault(); saveAndCalculatePhysical();">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-[#1A1B24] p-4 rounded-2xl border border-white/5">
                         <label class="block text-[10px] text-gray-500 mb-1 uppercase font-bold">Peso (kg)</label>
@@ -116,33 +122,57 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-violet-600 p-5 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-violet-500/20 active:scale-95 transition-all">Atualizar Metabolismo</button>
+                <div class="bg-[#1A1B24] p-4 rounded-2xl border border-white/5">
+                    <label class="block text-[10px] text-gray-500 mb-1 uppercase font-bold">Objetivo</label>
+                    <select id="userGoal" class="bg-transparent w-full text-lg font-black outline-none text-cyan-400">
+                        <option value="hipertrofia">Hipertrofia</option>
+                        <option value="emagrecimento">Emagrecimento</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-violet-600 p-5 rounded-2xl font-black uppercase tracking-widest">Atualizar Perfil</button>
             </form>
-            <div id="bmrResult" class="hidden p-8 bg-gradient-to-br from-[#1A1B24] to-black rounded-3xl border border-violet-500/30 text-center">
+            <div id="bmrResult" class="hidden p-8 bg-[#1A1B24] rounded-3xl border border-violet-500/30 text-center">
                 <p class="text-[10px] uppercase font-bold text-gray-400 mb-2">Seu Basal (TMB)</p>
                 <div class="text-5xl font-black text-cyan-400" id="bmrValue">0</div>
             </div>
         </div>
     </main>
 
-    <footer class="fixed bottom-6 left-4 right-4 max-w-xl mx-auto z-50">
-    <div class="bg-[#1A1B24]/90 backdrop-blur-2xl p-4 rounded-[2.5rem] border border-white/10 shadow-2xl flex items-center justify-between">
-        
-        <div id="currentSongInfo" class="ml-4 flex items-center gap-3">
-            <div id="music-wave" class="hidden">
-                <i class="fas fa-wave-square text-violet-400 animate-pulse"></i>
-            </div>
-            <div>
-                <p id="songTitle" class="text-xs font-black uppercase tracking-widest text-white">Treino Ativo</p>
-                <p id="stationName" class="text-[9px] text-gray-500 uppercase font-bold tracking-tighter">Radio Meet Phonk</p>
-            </div>
+    <div id="dietModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] hidden items-center justify-center p-6">
+        <div class="bg-[#1A1B24] w-full max-w-md rounded-[2rem] p-8 border border-white/10">
+            <h2 class="text-xl font-black italic mb-6 text-violet-400">NOVO ITEM</h2>
+            <form id="dietForm" class="space-y-4">
+                <select id="modalItemType" class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white outline-none" onchange="this.value === 'Suplemento' ? document.getElementById('linkContainer').classList.remove('hidden') : document.getElementById('linkContainer').classList.add('hidden')">
+                    <option value="Alimento">Alimento</option>
+                    <option value="Suplemento">Suplemento</option>
+                </select>
+                <input type="text" id="modalItemName" placeholder="Nome" class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white outline-none">
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" id="modalItemQty" placeholder="Qtd (ex: 200g)" class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white outline-none">
+                    <input type="time" id="modalItemTime" class="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white outline-none">
+                </div>
+                <div id="linkContainer" class="hidden">
+                    <input type="url" id="modalItemLink" placeholder="Link de Compra (https://...)" class="w-full bg-black/40 border border-cyan-500/30 rounded-xl p-4 text-white outline-none">
+                </div>
+                <div class="flex gap-3 mt-4">
+                    <button type="button" onclick="closeDietModal()" class="flex-1 py-4 bg-gray-800 rounded-2xl font-black text-xs uppercase">Cancelar</button>
+                    <button type="button" onclick="saveNewDietItem()" class="flex-1 py-4 bg-violet-600 rounded-2xl font-black text-xs uppercase">Salvar</button>
+                </div>
+            </form>
         </div>
-
-        <button id="playPauseButton" class="bg-white text-black w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-            <i class="fas fa-play" id="playPauseIcon"></i>
-        </button>
     </div>
-</footer>
+
+    <footer class="fixed bottom-6 left-4 right-4 max-w-xl mx-auto z-50">
+        <div class="bg-[#1A1B24]/90 backdrop-blur-2xl p-4 rounded-[2.5rem] border border-white/10 flex items-center justify-between shadow-2xl">
+            <div class="ml-4">
+                <p id="songTitle" class="text-xs font-black uppercase text-white">Treino Ativo</p>
+                <p class="text-[9px] text-gray-500 uppercase font-bold">Radio Meet Phonk</p>
+            </div>
+            <button id="playPauseButton" class="bg-white text-black w-12 h-12 rounded-full flex items-center justify-center">
+                <i class="fas fa-play" id="playPauseIcon"></i>
+            </button>
+        </div>
+    </footer>
 
     <script>
         const scriptToLoad = localStorage.getItem('userScript');
@@ -151,24 +181,17 @@
         if (!scriptToLoad) {
             window.location.href = 'login.html';
         } else {
-            // Injeta o nome no Topo e no Header
-            const formattedName = userName.replace('_', ' ').toUpperCase();
+            const formattedName = userName ? userName.toUpperCase() : 'USUÁRIO';
             document.getElementById('top-username').innerText = formattedName;
             document.getElementById('welcome-msg').innerText = `WORKOUT: ${formattedName}`;
 
-            // Carrega o script específico
             const scriptTag = document.createElement('script');
             scriptTag.src = scriptToLoad; 
-            scriptTag.onload = () => {
-                if (typeof init === 'function') init();
-            };
+            scriptTag.onload = () => { if (typeof init === 'function') init(); };
             document.body.appendChild(scriptTag);
         }
 
-        function logout() {
-            localStorage.clear();
-            window.location.href = 'login.html';
-        }
+        function logout() { localStorage.clear(); window.location.href = 'login.html'; }
     </script>
 </body>
 </html>

@@ -1,225 +1,270 @@
+/* ---------- Configuração da Rádio ---------- */
+const radioAudio = new Audio("https://stream.zeno.fm/71ntub27u18uv");
+radioAudio.crossOrigin = "anonymous"; 
+radioAudio.preload = "auto";
+
 /* ---------- Dados de Treino ---------- */
-const exerciciosFixos = [
-    { nome: "Abdominal na Máquina", series: 4, reps: 40, calorias: 50, url: "https://youtube.com/shorts/MkMfujLgb-M" },
-    { nome: "Prancha", series: 4, reps: "2 minuto", calorias: 85, url: "https://youtube.com/shorts/UwCFLBJv4ek" },
-    { nome: "Esteira", series: 1, reps: "30 minutos", velocidade: "6 km/h", inclinacao: 6, calorias: 330 }
-];
-
 const treinoData = {
-    "Segunda": { grupo: "Pernas", tempoMock: "1h 50 min", cor: "from-green-500/20 to-emerald-900/20", icon: "🦵", exercicios: [{ nome: "Aquecimento na Esteira", series: 1, reps: "5 min (140 bpm)", calorias: 45 }, { nome: "Elevação Pélvica com Barra", series: "10x10", reps: "—", calorias: 110 }, { nome: "Cadeira Adutora + Abdutora", series: "5x12", reps: "—", calorias: 70 }, { nome: "Mesa Flexora", series: 4, reps: 12, calorias: 55 }, { nome: "Cadeira Extensora", series: 4, reps: 12, calorias: 60 }, { nome: "Agachamento Smith", series: "2x12 / 2x10 / 1x8", reps: "—", calorias: 150 }, { nome: "Leg Press (Progressivo)", series: "8 séries", reps: "15→30 / 25→15", calorias: 190 }, { nome: "Panturrilha em Pé + Sentado", series: "8x15", reps: "—", calorias: 65 }] },
-    "Terça": { grupo: "Peito / Tríceps", tempoMock: "1h 40 min", cor: "from-pink-500/20 to-rose-900/20", icon: "🔥", exercicios: [{ nome: "Supino Reto", series: "2x12 / 2x10", reps: "—", calorias: 85 }, { nome: "Crucifixo Inclinado Cabo + Supino Inclinado Livre", series: "2x12 / 2x10", reps: "—", calorias: 110 }, { nome: "CrossOver Baixo", series: 4, reps: 15, calorias: 60 }, { nome: "CrossOver", series: "7x Limit", reps: "—", calorias: 95 }, { nome: "Paralelas", series: 4, reps: 10, calorias: 90 }, { nome: "Tríceps Testa W", series: 4, reps: 12, calorias: 65 }, { nome: "Tríceps Corda", series: 4, reps: 12, calorias: 55 }, { nome: "Tríceps Pulley W", series: "7x Limit", reps: "—", calorias: 80 }, { nome: "Prancha Abdominal", series: 4, reps: "2 min", calorias: 85 }, { nome: "Abdominal Máquina", series: 4, reps: 40, calorias: 50 }] },
-    "Quarta": { grupo: "Costas / Panturrilha", tempoMock: "1h 35 min", cor: "from-blue-500/20 to-indigo-900/20", icon: "💪", exercicios: [{ nome: "PullDown Corda", series: 4, reps: 15, calorias: 60 }, { nome: "Barra Fixa Peito", series: 4, reps: 10, calorias: 95 }, { nome: "Puxador Alto Triângulo", series: "2x15 / 2x12", reps: "—", calorias: 55 }, { nome: "Remada Curvada Pronada", series: "2x12 / 2x10", reps: "—", calorias: 85 }, { nome: "Remada Curvada 45°", series: "2x12 / 2x10", reps: "—", calorias: 80 }, { nome: "Remada Baixa (Drop)", series: "4 Drops", reps: "10/10/10", calorias: 105 }, { nome: "Encolhimento com Halter", series: 4, reps: 15, calorias: 55 }, { nome: "Hipertensão Lombar", series: 4, reps: 20, calorias: 60 }, { nome: "Panturrilha em Pé + Sentado", series: "8x15", reps: "—", calorias: 65 }] },
-    "Quinta": { grupo: "Cardio + Abdômen", tempoMock: "1h 10 min", cor: "from-cyan-500/20 to-sky-900/20", icon: "🏃", exercicios: [{ nome: "Escada", series: 1, reps: "—", calorias: 165 }] },
-    "Sexta": { grupo: "Pernas", tempoMock: "1h 50 min", cor: "from-green-500/20 to-emerald-900/20", icon: "🦵", exercicios: [{ nome: "Aquecimento na Esteira", series: 1, reps: "5 min (140 bpm)", calorias: 45 }, { nome: "Elevação Pélvica com Barra", series: "10x10", reps: "—", calorias: 110 }, { nome: "Cadeira Adutora + Abdutora", series: "5x12", reps: "—", calorias: 70 }, { nome: "Mesa Flexora", series: 4, reps: 12, calorias: 55 }, { nome: "Cadeira Extensora", series: 4, reps: 12, calorias: 60 }, { nome: "Agachamento Smith", series: "2x12 / 2x10 / 1x8", reps: "—", calorias: 150 }, { nome: "Leg Press (Progressivo)", series: "8 séries", reps: "15→30 / 25→15", calorias: 190 }, { nome: "Panturrilha em Pé + Sentado", series: "8x15", reps: "—", calorias: 65 }] },
-    "Sábado": { grupo: "Ombro / Bíceps", tempoMock: "1h 30 min", cor: "from-orange-500/20 to-red-900/20", icon: "🔥", exercicios: [{ nome: "Elevação Frontal Corda", series: 4, reps: 12, calorias: 55 }, { nome: "Desenvolvimento Frontal", series: "2x12 / 2x10", reps: "—", calorias: 90 }, { nome: "Crucifixo Inverso + Encolhimento Halter", series: 4, reps: 12, calorias: 75 }, { nome: "Elevação Lateral Polia (Drop)", series: "4 Drops", reps: "10/10/10", calorias: 95 }, { nome: "Rosca Direta W Polia", series: 4, reps: 12, calorias: 55 }, { nome: "Rosca Martelo Corda", series: 4, reps: 12, calorias: 60 }, { nome: "Rosca Concentrada Pulley", series: 4, reps: 12, calorias: 55 }, { nome: "Rosca Spider Halter 45°", series: "7x Limit", reps: "—", calorias: 90 }, { nome: "Prancha Abdominal", series: 4, reps: "2 min", calorias: 85 }, { nome: "Abdominal Máquina", series: 4, reps: 40, calorias: 50 }] },
-    "Domingo": { isRest: true, icon: "🧘", motivo: "Alongamento e recuperação geral" }
+    "Segunda": { grupo: "Pernas", icon: "🦵", exercicios: [{ id: 101, nome: "Aquecimento", series: 1, reps: "5 min", calorias: 45 }, { id: 102, nome: "Elevação Pélvica", series: "10x10", reps: "—", calorias: 110 }, { id: 103, nome: "Cadeira Adutora", series: "5x12", reps: "—", calorias: 70 }, { id: 104, nome: "Mesa Flexora", series: 4, reps: 12, calorias: 55 }, { id: 105, nome: "Cadeira Extensora", series: 4, reps: 12, calorias: 60 }, { id: 106, nome: "Agachamento Smith", series: "4x10", reps: "—", calorias: 150 }, { id: 107, nome: "Leg Press", series: "8 séries", reps: "20", calorias: 190 }, { id: 108, nome: "Panturrilha", series: "8x15", reps: "—", calorias: 65 }] },
+    "Terça": { grupo: "Peito / Tríceps", icon: "🔥", exercicios: [{ id: 201, nome: "Supino Reto", series: "4x10", reps: "—", calorias: 85 }, { id: 202, nome: "Crucifixo Inclinado", series: "4x12", reps: "—", calorias: 110 }, { id: 203, nome: "CrossOver", series: 4, reps: 15, calorias: 95 }, { id: 204, nome: "Tríceps Corda", series: 4, reps: 12, calorias: 55 }, { id: 205, nome: "Tríceps Pulley", series: "7x Limit", reps: "—", calorias: 80 }] },
+    "Quarta": { 
+        grupo: "Costas / Panturrilha", 
+        icon: "💪", 
+        exercicios: [
+            { id: 301, nome: "PullDown", series: 4, reps: 15, calorias: 60 },
+            { id: 302, nome: "Barra Fixa", series: 4, reps: 10, calorias: 95 },
+            { id: 303, nome: "Remada Curvada", series: "4x12", reps: "—", calorias: 85, videoUrl: "https://www.youtube.com/embed/cMQpvkZGQrE?autoplay=1&mute=1&loop=1&playlist=cMQpvkZGQrE" },
+            // REMADA BAIXA COM VÍDEO EMBUTIDO
+            { 
+                id: 304, 
+                nome: "Remada Baixa", 
+                series: "4x10", 
+                reps: "Drop", 
+                calorias: 105,
+                videoUrl: "https://www.youtube.com/embed/TZpDTv1Xmzc?autoplay=1&mute=1&loop=1&playlist=TZpDTv1Xmzc" 
+            },
+            { id: 305, nome: "Panturrilha", series: "8x15", reps: "—", calorias: 65 }
+        ] 
+    },
+    "Quinta": { grupo: "Cardio + Abdômen", icon: "🏃", exercicios: [{ id: 401, nome: "Escada", series: 1, reps: "20 min", calorias: 165 }] },
+    "Sexta": { grupo: "Pernas", icon: "🦵", exercicios: [{ id: 501, nome: "Agachamento", series: "4x10", reps: "—", calorias: 150 }, { id: 502, nome: "Leg Press", series: "4x15", reps: "—", calorias: 190 }, { id: 503, nome: "Extensora", series: "4x12", reps: "—", calorias: 60 }] },
+    "Sábado": { grupo: "Ombro / Bíceps", icon: "🔥", exercicios: [{ id: 601, nome: "Desenvolvimento", series: "4x10", reps: "—", calorias: 90 }, { id: 602, nome: "Elevação Lateral", series: "4x12", reps: "Drop", calorias: 95 }, { id: 603, nome: "Rosca Direta", series: 4, reps: 12, calorias: 55 }, { id: 604, nome: "Rosca Martelo", series: 4, reps: 12, calorias: 60 }] },
+    "Domingo": { isRest: true, icon: "🧘", motivo: "Recuperação Total" }
 };
 
-/* ---------- Elementos do DOM ---------- */
-const daySelect = document.getElementById('daySelect');
-const dayContent = document.getElementById('dayContent');
-const caloriesRing = document.getElementById('caloriesRing');
-const totalCalEl = document.getElementById('totalCalorias');
-
-const tabs = {
-    training: { btn: document.getElementById('tabTraining'), content: document.getElementById('contentTraining') },
-    diet: { btn: document.getElementById('tabDiet'), content: document.getElementById('contentDiet') },
-    physical: { btn: document.getElementById('tabPhysical'), content: document.getElementById('contentPhysical') }
-};
-
-/* ---------- Navegação de Abas ---------- */
-function switchTab(target) {
-    Object.keys(tabs).forEach(key => {
-        const isTarget = key === target;
-        // Adiciona/Remove classe ativa no botão
-        tabs[key].btn.classList.toggle('active', isTarget);
-        tabs[key].btn.classList.toggle('text-gray-500', !isTarget);
-        
-        // Mostra/Esconde o conteúdo
-        if (isTarget) {
-            tabs[key].content.classList.remove('hidden');
-        } else {
-            tabs[key].content.classList.add('hidden');
-        }
-    });
-
-    // IMPORTANTE: Renderiza a dieta se mudar para a aba de dieta
-    if (target === 'diet') {
-        renderDiet('ON');
-    }
+/* ---------- Sistema de Modais ---------- */
+function showModal(title, message, type = 'info') {
+    const modal = document.createElement('div');
+    modal.className = "fixed inset-0 bg-black/90 backdrop-blur-md z-[200] flex items-center justify-center p-6 animate-fade-in";
+    const colors = type === 'error' ? 'text-red-500' : 'text-violet-400';
+    
+    modal.innerHTML = `
+        <div class="bg-[#1A1B24] w-full max-w-sm rounded-[2rem] p-8 border border-white/10 text-center shadow-2xl">
+            <div class="text-4xl mb-4 ${colors}"><i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i></div>
+            <h2 class="text-xl font-black uppercase mb-2 italic text-white">${title}</h2>
+            <p class="text-gray-400 text-sm mb-6 font-medium">${message}</p>
+            <button onclick="this.parentElement.parentElement.remove()" class="w-full py-4 bg-violet-600 rounded-2xl font-black text-xs uppercase tracking-widest">OK</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
 }
 
-/* ---------- Funções de Treino ---------- */
-function renderWorkoutDay(dia) {
-    const data = treinoData[dia];
-    if (data.isRest) {
-        dayContent.innerHTML = `
-            <div class="p-10 text-center bg-[#1A1B24] rounded-3xl border border-white/5 shadow-2xl">
-                <span class="text-7xl block mb-4">${data.icon}</span>
-                <h2 class="text-2xl font-black italic tracking-tighter">${data.motivo}</h2>
-            </div>`;
-        updateRingAndTotal(0);
-        return;
-    }
-
-    const isPernas = data.grupo.includes("Pernas");
-    const lista = isPernas ? data.exercicios : [...data.exercicios, ...exerciciosFixos];
-    const totalCal = lista.reduce((s, ex) => s + (Number(ex.calorias) || 0), 0);
-
-    dayContent.innerHTML = `
-        <div class="space-y-3">
-            ${lista.map((ex, i) => `
-                <div class="bg-[#1A1B24] p-4 rounded-2xl border border-white/5 flex items-center justify-between group transition-all hover:bg-[#1f202b]">
-                    <label class="relative flex items-center cursor-pointer flex-grow">
-                        <input type="checkbox" class="task-check hidden peer">
-                        
-                        <div class="w-7 h-7 border-2 border-violet-500/50 rounded-lg flex items-center justify-center peer-checked:bg-violet-500 peer-checked:border-violet-500 transition-all shadow-lg shadow-violet-500/0 peer-checked:shadow-violet-500/20">
-                            <i class="fas fa-check text-white text-[10px] scale-0 peer-checked:scale-100 transition-transform"></i>
-                        </div>
-
-                        <div class="ml-4 task-text flex-grow">
-                            <div class="flex items-center justify-between mb-1">
-                                <strong class="text-sm font-bold text-gray-100 tracking-tight">${ex.nome}</strong>
-                                <span class="kcal-tag">${ex.calorias} kcal</span>
-                            </div>
-                            <div class="flex gap-3">
-                                <span class="text-[10px] font-black text-violet-400 uppercase tracking-tighter">
-                                    <i class="fas fa-layer-group mr-1"></i>${ex.series} Séries
-                                </span>
-                                <span class="text-[10px] font-black text-cyan-400 uppercase tracking-tighter">
-                                    <i class="fas fa-redo mr-1"></i>${ex.reps} Reps
-                                </span>
-                            </div>
-                        </div>
-                    </label>
-                </div>`).join('')}
-        </div>`;
-
-    updateRingAndTotal(totalCal);
-}
-
-/* ---------- Cálculos e Basal ---------- */
+/* ---------- Lógica de Calorias e Anel ---------- */
 function updateRingAndTotal(trainingCal) {
     const savedData = JSON.parse(localStorage.getItem('iTrainPhysical')) || { bmr: 0 };
     const total = trainingCal + (Number(savedData.bmr) || 0);
     
-    // Animação numérica simples
-    totalCalEl.textContent = total.toLocaleString('pt-BR');
-
-    const circumference = 440; // Mesmo valor do stroke-dasharray no HTML
-    const goal = 3500; // Meta diária de queima
-    const progress = Math.min(total / goal, 1);
-    const offset = circumference - (progress * circumference);
+    const el = document.getElementById('totalCalorias');
+    if (el) el.textContent = total.toLocaleString('pt-BR');
     
-    caloriesRing.style.strokeDashoffset = offset;
+    const ring = document.getElementById('caloriesRing');
+    if (ring) {
+        const goal = 3500; // Meta de exemplo
+        const progress = Math.min(total / goal, 1);
+        const offset = 440 - (progress * 440);
+        ring.style.strokeDashoffset = offset;
+    }
 }
 
-function saveAndCalculatePhysical() {
-    const w = parseFloat(document.getElementById('weight').value);
-    const h = parseFloat(document.getElementById('height').value);
-    const a = parseInt(document.getElementById('age').value);
-    const g = document.getElementById('gender').value;
+/* ---------- Persistência de Exercícios (3 Horas) ---------- */
+function saveTaskState(taskId, isChecked) {
+    let states = JSON.parse(localStorage.getItem('taskStates')) || {};
+    states[taskId] = { checked: isChecked, timestamp: Date.now() };
+    localStorage.setItem('taskStates', JSON.stringify(states));
+}
 
-    if(!w || !h || !a) {
-        alert("Preencha todos os campos para calcular!");
+function getTaskState(taskId) {
+    let states = JSON.parse(localStorage.getItem('taskStates')) || {};
+    const state = states[taskId];
+    if (!state) return false;
+    
+    if (Date.now() - state.timestamp > (3 * 60 * 60 * 1000)) {
+        delete states[taskId];
+        localStorage.setItem('taskStates', JSON.stringify(states));
+        return false;
+    }
+    return state.checked;
+}
+
+/* ---------- Renderização de Treino ---------- */
+function renderWorkoutDay(dia) {
+    const dayContent = document.getElementById('dayContent');
+    const data = treinoData[dia];
+    
+    if (data.isRest) {
+        dayContent.innerHTML = `<div class="p-10 text-center bg-[#1A1B24] rounded-3xl border border-white/5"><span class="text-7xl block mb-4">${data.icon}</span><h2 class="text-2xl font-black italic">${data.motivo}</h2></div>`;
+        updateRingAndTotal(0);
         return;
     }
 
-    // Equação de Mifflin-St Jeor
-    let bmr = (10 * w) + (6.25 * h) - (5 * a);
-    bmr += (g === 'male' ? 5 : -161);
-    bmr = Math.round(bmr);
-
-    // Salva no LocalStorage
-    localStorage.setItem('iTrainPhysical', JSON.stringify({ 
-        weight: w, height: h, age: a, gender: g, bmr: bmr 
-    }));
-
-    // Exibe o resultado
-    const bmrValueEl = document.getElementById('bmrValue');
-    const bmrResultContainer = document.getElementById('bmrResult');
+    dayContent.innerHTML = data.exercicios.map(ex => {
+        const checked = getTaskState(ex.id);
+        return `
+        <div class="bg-[#1A1B24] rounded-2xl border border-white/5 overflow-hidden mb-3">
+            <div class="p-4 flex items-center">
+                <label class="flex items-center gap-4 cursor-pointer flex-grow">
+                    <input type="checkbox" class="task-check hidden peer" ${checked ? 'checked' : ''} onchange="saveTaskState(${ex.id}, this.checked)">
+                    <div class="w-6 h-6 border-2 border-violet-500/50 rounded-lg flex items-center justify-center peer-checked:bg-violet-500 transition-all">
+                        <i class="fas fa-check text-white text-[8px] scale-0 peer-checked:scale-100"></i>
+                    </div>
+                    <div class="task-text flex-grow">
+                        <div class="flex items-center justify-between">
+                            <strong class="text-sm font-bold text-gray-100">${ex.nome}</strong>
+                            <span class="kcal-tag">${ex.calorias} kcal</span>
+                        </div>
+                        <div class="text-[10px] font-black uppercase text-gray-500 mt-1">
+                            ${ex.series} Séries • <span class="text-cyan-400">${ex.reps}</span>
+                        </div>
+                    </div>
+                </label>
+                ${ex.videoUrl ? `<button onclick="toggleVideo('${ex.id}')" class="ml-2 text-violet-400 p-2 bg-violet-400/10 rounded-full"><i class="fas fa-video"></i></button>` : ''}
+            </div>
+            
+            ${ex.videoUrl ? `
+            <div id="video-${ex.id}" class="hidden w-full aspect-[9/16] bg-black">
+                <iframe src="${ex.videoUrl}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>` : ''}
+        </div>`;
+    }).join('');
     
-    if (bmrValueEl && bmrResultContainer) {
-        bmrValueEl.textContent = bmr.toLocaleString('pt-BR');
-        bmrResultContainer.classList.remove('hidden');
-    }
-
-    // Atualiza o anel de calorias na Home
-    renderWorkoutDay(daySelect.value);
+    const totalCal = data.exercicios.reduce((s, ex) => s + (Number(ex.calorias) || 0), 0);
+    updateRingAndTotal(totalCal);
 }
 
-function loadPhysicalData() {
-    const saved = localStorage.getItem('iTrainPhysical');
-    if (saved) {
-        const data = JSON.parse(saved);
-        if(document.getElementById('weight')) document.getElementById('weight').value = data.weight;
-        if(document.getElementById('height')) document.getElementById('height').value = data.height;
-        if(document.getElementById('age')) document.getElementById('age').value = data.age;
-        if(document.getElementById('gender')) document.getElementById('gender').value = data.gender;
-        
-        const bmrValueEl = document.getElementById('bmrValue');
-        const bmrResultContainer = document.getElementById('bmrResult');
-        
-        if (bmrValueEl && bmrResultContainer) {
-            bmrValueEl.textContent = data.bmr.toLocaleString('pt-BR');
-            bmrResultContainer.classList.remove('hidden');
-        }
-    }
+function toggleVideo(id) {
+    const videoDiv = document.getElementById(`video-${id}`);
+    videoDiv.classList.toggle('hidden');
 }
 
-/* ---------- Dieta ---------- */
-const dietaData = { 
-    ON: [ { time: "04:30", item: "L-Cartinina 2ml", obs: "Aumentar 1ml a cada 3 dias" }, { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" }, { time: "08:00", item: "Café 100ml", obs: "Sem açúcar" }, { time: "12:00", item: "Whey Protein", obs: "60g de proteína" }, { time: "18:00", item: "Arroz + Frango", obs: "100g Arroz + 200g Frango" }, { time: "21:30", item: "Gaba 1g", obs: "Dormir" } ], 
-    OFF: [ { time: "04:30", item: "Mix de Chás", obs: "Hibisco + Cavalinha + Chá Verde" }, { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" }, { time: "12:00", item: "Whey Protein", obs: "60g de proteína" }, { time: "18:00", item: "Arroz + Frango", obs: "100g Arroz + 200g Frango" } ] 
-};
-
+/* ---------- Sistema de Dieta ---------- */
 function renderDiet(tipo) {
     const container = document.getElementById('dietContainer');
+    const db = JSON.parse(localStorage.getItem('dietaUsuario')) || { ON: [], OFF: [] };
+    const itens = db[tipo] || [];
+
+    // Estilo dos botões
     const btnOn = document.getElementById('btnDietOn');
     const btnOff = document.getElementById('btnDietOff');
+    if(btnOn && btnOff) {
+        btnOn.className = `flex-1 py-3 rounded-xl font-black text-xs ${tipo==='ON'?'bg-violet-600 text-white':'text-gray-500 bg-black/20'}`;
+        btnOff.className = `flex-1 py-3 rounded-xl font-black text-xs ${tipo==='OFF'?'bg-violet-600 text-white':'text-gray-500 bg-black/20'}`;
+    }
 
-    // Estilo dos botões da dieta
-    btnOn.className = `flex-1 py-3 rounded-xl font-black transition-all text-xs ${tipo==='ON'?'bg-violet-600 text-white shadow-lg shadow-violet-500/30':'text-gray-500 bg-black/20'}`;
-    btnOff.className = `flex-1 py-3 rounded-xl font-black transition-all text-xs ${tipo==='OFF'?'bg-violet-600 text-white shadow-lg shadow-violet-500/30':'text-gray-500 bg-black/20'}`;
-
-    container.innerHTML = dietaData[tipo].map((d, i) => `
-        <div class="flex items-center justify-between p-5 bg-[#1A1B24] border border-white/5 rounded-2xl group">
-            <label class="flex items-center gap-5 cursor-pointer flex-grow">
-                <input type="checkbox" class="task-check hidden peer">
-                <div class="w-6 h-6 border-2 border-violet-500/50 rounded-full flex items-center justify-center peer-checked:bg-violet-500 peer-checked:border-violet-500 transition-all">
-                    <i class="fas fa-check text-white text-[8px] scale-0 peer-checked:scale-100 transition-transform"></i>
-                </div>
-                <div class="task-text transition-all">
-                    <div class="text-violet-400 font-black text-xs uppercase tracking-tighter mb-1">${d.time}</div>
-                    <div class="font-bold text-white">${d.item}</div>
-                    <div class="text-[10px] text-gray-500 font-medium">${d.obs}</div>
-                </div>
-            </label>
-        </div>`).join('');
+    container.innerHTML = itens.map(d => `
+        <div class="flex items-center p-4 bg-[#1A1B24] border border-white/5 rounded-2xl mb-3">
+            <div class="flex-grow">
+                <div class="text-violet-400 font-black text-[10px] uppercase">${d.type} • ${d.time}</div>
+                <div class="font-bold text-white">${d.item}</div>
+                <div class="text-[10px] text-gray-500">${d.qty}</div>
+            </div>
+            <div class="flex items-center gap-2">
+                ${d.link ? `<a href="${d.link}" target="_blank" class="p-2 text-cyan-400"><i class="fas fa-shopping-cart"></i></a>` : ''}
+                <button onclick="deleteDietItem('${tipo}', ${d.id})" class="p-2 text-red-500"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>`).join('') || '<p class="text-center py-10 text-gray-600">Nada cadastrado.</p>';
 }
 
-/* ---------- Inicialização ---------- */
-function init() {
-    // Popula o Select
-    daySelect.innerHTML = Object.keys(treinoData).map(d => `<option value="${d}">${d}</option>`).join('');
-    
-    // Listeners das Abas
-    tabs.training.btn.addEventListener('click', () => switchTab('training'));
-    tabs.diet.btn.addEventListener('click', () => switchTab('diet'));
-    tabs.physical.btn.addEventListener('click', () => switchTab('physical'));
-    
-    // Form físico
-    document.getElementById('physicalForm').addEventListener('submit', (e) => { 
-        e.preventDefault(); 
-        saveAndCalculatePhysical(); 
+function saveNewDietItem() {
+    const name = document.getElementById('modalItemName').value;
+    const qty = document.getElementById('modalItemQty').value;
+    const time = document.getElementById('modalItemTime').value;
+    if(!name || !qty || !time) return showModal("Erro", "Preencha os campos obrigatórios", "error");
+
+    const db = JSON.parse(localStorage.getItem('dietaUsuario')) || { ON: [], OFF: [] };
+    const tipoAtual = document.getElementById('btnDietOn').classList.contains('bg-violet-600') ? 'ON' : 'OFF';
+
+    db[tipoAtual].push({
+        id: Date.now(),
+        type: document.getElementById('modalItemType').value,
+        item: name, qty: qty, time: time,
+        link: document.getElementById('modalItemLink').value
     });
 
-    // Change do dia
-    daySelect.addEventListener('change', (e) => renderWorkoutDay(e.target.value));
-
-    // Start
-    loadPhysicalData();
-    renderWorkoutDay(daySelect.value);
+    localStorage.setItem('dietaUsuario', JSON.stringify(db));
+    closeDietModal();
+    renderDiet(tipoAtual);
+    showModal("Sucesso", "Item adicionado!", "success");
 }
 
-window.onload = init;
+function deleteDietItem(tipo, id) {
+    let db = JSON.parse(localStorage.getItem('dietaUsuario'));
+    db[tipo] = db[tipo].filter(i => i.id !== id);
+    localStorage.setItem('dietaUsuario', JSON.stringify(db));
+    renderDiet(tipo);
+}
+
+/* ---------- Perfil Físico ---------- */
+function saveAndCalculatePhysical() {
+    const w = document.getElementById('weight').value;
+    const h = document.getElementById('height').value;
+    const a = document.getElementById('age').value;
+    const g = document.getElementById('gender').value;
+
+    if(!w || !h || !a) return showModal("Erro", "Preencha todos os campos físicos", "error");
+
+    const bmr = Math.round((10 * w) + (6.25 * h) - (5 * a) + (g === 'male' ? 5 : -161));
+    localStorage.setItem('iTrainPhysical', JSON.stringify({ weight: w, height: h, age: a, gender: g, bmr: bmr }));
+    
+    document.getElementById('bmrValue').textContent = bmr.toLocaleString('pt-BR');
+    document.getElementById('bmrResult').classList.remove('hidden');
+    
+    // Atualiza o anel com o novo basal
+    const diaH = document.getElementById('daySelect').value;
+    renderWorkoutDay(diaH);
+    
+    showModal("Perfil", "Dados atualizados com sucesso!", "success");
+}
+
+/* ---------- Inicialização e Abas ---------- */
+function switchTab(target) {
+    document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active', 'text-white'));
+    document.querySelectorAll('[id^="content"]').forEach(d => d.classList.add('hidden'));
+    
+    const activeTab = document.getElementById('tab' + target.charAt(0).toUpperCase() + target.slice(1));
+    const activeContent = document.getElementById('content' + target.charAt(0).toUpperCase() + target.slice(1));
+    
+    if(activeTab) activeTab.classList.add('active');
+    if(activeContent) activeContent.classList.remove('hidden');
+
+    if(target === 'diet') renderDiet('ON');
+}
+
+function setupRadio() {
+    const btn = document.getElementById('playPauseButton');
+    const icon = document.getElementById('playPauseIcon');
+    btn?.addEventListener('click', () => {
+        if (radioAudio.paused) { radioAudio.play(); icon.classList.replace('fa-play', 'fa-pause'); }
+        else { radioAudio.pause(); icon.classList.replace('fa-pause', 'fa-play'); }
+    });
+}
+
+function init() {
+    const dias = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+    const hoje = dias[new Date().getDay()];
+    
+    const ds = document.getElementById('daySelect');
+    if(ds) {
+        ds.innerHTML = dias.map(d => `<option value="${d}" ${d===hoje?'selected':''}>${d}</option>`).join('');
+        ds.addEventListener('change', (e) => renderWorkoutDay(e.target.value));
+        renderWorkoutDay(hoje);
+    }
+
+    document.getElementById('tabTraining')?.addEventListener('click', () => switchTab('training'));
+    document.getElementById('tabDiet')?.addEventListener('click', () => switchTab('diet'));
+    document.getElementById('tabPhysical')?.addEventListener('click', () => switchTab('physical'));
+
+    // Carregar físico salvo
+    const phy = JSON.parse(localStorage.getItem('iTrainPhysical'));
+    if(phy) {
+        document.getElementById('weight').value = phy.weight;
+        document.getElementById('height').value = phy.height;
+        document.getElementById('age').value = phy.age;
+        document.getElementById('bmrValue').textContent = phy.bmr.toLocaleString('pt-BR');
+        document.getElementById('bmrResult').classList.remove('hidden');
+    }
+
+    setupRadio();
+}
+
+function openDietModal() { document.getElementById('dietModal').style.display = 'flex'; }
+function closeDietModal() { document.getElementById('dietModal').style.display = 'none'; }
