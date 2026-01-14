@@ -164,6 +164,35 @@ function renderDiet(tipo) {
         </div>`).join('') || '<p class="text-center py-10 text-gray-600">Nada cadastrado.</p>';
 }
 
+/* ---------- Sistema de Confirmação de Deleção ---------- */
+
+function showConfirmModal(title, message, onConfirm) {
+    const modal = document.createElement('div');
+    modal.className = "fixed inset-0 bg-black/90 backdrop-blur-md z-[250] flex items-center justify-center p-6 animate-fade-in";
+    
+    modal.innerHTML = `
+        <div class="bg-[#1A1B24] w-full max-w-sm rounded-[2rem] p-8 border border-white/10 text-center shadow-2xl">
+            <div class="text-4xl mb-4 text-red-500"><i class="fas fa-trash-alt"></i></div>
+            <h2 class="text-xl font-black uppercase mb-2 italic text-white">${title}</h2>
+            <p class="text-gray-400 text-sm mb-6 font-medium">${message}</p>
+            <div class="flex gap-3">
+                <button id="cancelBtn" class="flex-1 py-4 bg-gray-800 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 text-gray-400">Cancelar</button>
+                <button id="confirmBtn" class="flex-1 py-4 bg-red-600 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 text-white">Excluir</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+
+    // Lógica dos botões
+    modal.querySelector('#cancelBtn').onclick = () => modal.remove();
+    modal.querySelector('#confirmBtn').onclick = () => {
+        onConfirm();
+        modal.remove();
+        showModal("Excluído", "O item foi removido com sucesso.", "success");
+    };
+}
+
 function saveNewDietItem() {
     const name = document.getElementById('modalItemName').value;
     const qty = document.getElementById('modalItemQty').value;
@@ -187,10 +216,16 @@ function saveNewDietItem() {
 }
 
 function deleteDietItem(tipo, id) {
-    let db = JSON.parse(localStorage.getItem('dietaUsuario'));
-    db[tipo] = db[tipo].filter(i => i.id !== id);
-    localStorage.setItem('dietaUsuario', JSON.stringify(db));
-    renderDiet(tipo);
+    showConfirmModal(
+        "Tem certeza?", 
+        "Você está prestes a remover este item da sua dieta. Essa ação não pode ser desfeita.", 
+        () => {
+            let db = JSON.parse(localStorage.getItem('dietaUsuario'));
+            db[tipo] = db[tipo].filter(i => i.id !== id);
+            localStorage.setItem('dietaUsuario', JSON.stringify(db));
+            renderDiet(tipo);
+        }
+    );
 }
 
 /* ---------- Perfil Físico ---------- */
