@@ -5,6 +5,7 @@ radioAudio.preload = "auto";
 
 /* ---------- Dados de Treino ---------- */
 const treinoData = {
+<<<<<<< HEAD
     "Segunda": { grupo: "Pernas", icon: "🦵", exercicios: [{ id: 101, nome: "Aquecimento", series: 1, reps: "5 min", calorias: 45 }, { id: 102, nome: "Elevação Pélvica", series: "10x10", reps: "—", calorias: 110 }, { id: 103, nome: "Cadeira Adutora", series: "5x12", reps: "—", calorias: 70 }, { id: 104, nome: "Mesa Flexora", series: 4, reps: 12, calorias: 55 }, { id: 105, nome: "Cadeira Extensora", series: 4, reps: 12, calorias: 60 }, { id: 106, nome: "Agachamento Smith", series: "4x10", reps: "—", calorias: 150 }, { id: 107, nome: "Leg Press", series: "8 séries", reps: "20", calorias: 190 }, { id: 108, nome: "Panturrilha", series: "8x15", reps: "—", calorias: 65 }] },
     "Terça": { grupo: "Peito / Tríceps", icon: "🔥", exercicios: [{ id: 201, nome: "Supino Reto", series: "4x10", reps: "—", calorias: 85 }, { id: 202, nome: "Crucifixo Inclinado", series: "4x12", reps: "—", calorias: 110 }, { id: 203, nome: "CrossOver", series: 4, reps: 15, calorias: 95 }, { id: 204, nome: "Tríceps Corda", series: 4, reps: 12, calorias: 55 }, { id: 205, nome: "Tríceps Pulley", series: "7x Limit", reps: "—", calorias: 80 }] },
     "Quarta": { 
@@ -47,6 +48,65 @@ function showModal(title, message, type = 'info') {
         </div>
     `;
     document.body.appendChild(modal);
+=======
+    "Segunda": { grupo: "Pernas", tempoMock: "1h 50 min", cor: "from-green-500/20 to-emerald-900/20", icon: "🦵", exercicios: [{ nome: "Aquecimento na Esteira", series: 1, reps: "5 min (140 bpm)", calorias: 45 }, { nome: "Elevação Pélvica com Barra", series: "10x10", reps: "—", calorias: 110 }, { nome: "Cadeira Adutora + Abdutora", series: "5x12", reps: "—", calorias: 70 }, { nome: "Mesa Flexora", series: 4, reps: 12, calorias: 55 }, { nome: "Cadeira Extensora", series: 4, reps: 12, calorias: 60 }, { nome: "Agachamento Smith", series: "2x12 / 2x10 / 1x8", reps: "—", calorias: 150 }, { nome: "Leg Press (Progressivo)", series: "8 séries", reps: "15→30 / 25→15", calorias: 190 }, { nome: "Panturrilha em Pé + Sentado", series: "8x15", reps: "—", calorias: 65 }] },
+    "Terça": { grupo: "Peito / Tríceps", tempoMock: "1h 40 min", cor: "from-pink-500/20 to-rose-900/20", icon: "🔥", exercicios: [{ nome: "Supino Reto", series: "2x12 / 2x10", reps: "—", calorias: 85 }, { nome: "Crucifixo Inclinado Cabo + Supino Inclinado Livre", series: "2x12 / 2x10", reps: "—", calorias: 110 }, { nome: "CrossOver Baixo", series: 4, reps: 15, calorias: 60 }, { nome: "CrossOver", series: "7x Limit", reps: "—", calorias: 95 }, { nome: "Paralelas", series: 4, reps: 10, calorias: 90 }, { nome: "Tríceps Testa W", series: 4, reps: 12, calorias: 65 }, { nome: "Tríceps Corda", series: 4, reps: 12, calorias: 55 }, { nome: "Tríceps Pulley W", series: "7x Limit", reps: "—", calorias: 80 }, { nome: "Prancha Abdominal", series: 4, reps: "2 min", calorias: 85 }, { nome: "Abdominal Máquina", series: 4, reps: 40, calorias: 50 }] },
+    "Quarta": { grupo: "Costas / Panturrilha", tempoMock: "1h 35 min", cor: "from-blue-500/20 to-indigo-900/20", icon: "💪", exercicios: [{ nome: "PullDown Corda", series: 4, reps: 15, calorias: 60 }, { nome: "Barra Fixa Peito", series: 4, reps: 10, calorias: 95 }, { nome: "Puxador Alto Triângulo", series: "2x15 / 2x12", reps: "—", calorias: 55 }, { nome: "Remada Curvada Pronada", series: "2x12 / 2x10", reps: "—", calorias: 85 }, { nome: "Remada Curvada 45°", series: "2x12 / 2x10", reps: "—", calorias: 80 }, { nome: "Remada Baixa (Drop)", series: "4 Drops", reps: "10/10/10", calorias: 105 }, { nome: "Encolhimento com Halter", series: 4, reps: 15, calorias: 55 }, { nome: "Hipertensão Lombar", series: 4, reps: 20, calorias: 60 }, { nome: "Panturrilha em Pé + Sentado", series: "8x15", reps: "—", calorias: 65 }] },
+    "Quinta": { grupo: "Cardio + Abdômen", tempoMock: "1h 10 min", cor: "from-cyan-500/20 to-sky-900/20", icon: "🏃", exercicios: [{ nome: "Escada", series: 1, reps: "—", calorias: 165 }] },
+    "Sexta": { grupo: "Pernas", tempoMock: "1h 50 min", cor: "from-green-500/20 to-emerald-900/20", icon: "🦵", exercicios: [{ nome: "Aquecimento na Esteira", series: 1, reps: "5 min (140 bpm)", calorias: 45 }, { nome: "Elevação Pélvica com Barra", series: "10x10", reps: "—", calorias: 110 }, { nome: "Cadeira Adutora + Abdutora", series: "5x12", reps: "—", calorias: 70 }, { nome: "Mesa Flexora", series: 4, reps: 12, calorias: 55 }, { nome: "Cadeira Extensora", series: 4, reps: 12, calorias: 60 }, { nome: "Agachamento Smith", series: "2x12 / 2x10 / 1x8", reps: "—", calorias: 150 }, { nome: "Leg Press (Progressivo)", series: "8 séries", reps: "15→30 / 25→15", calorias: 190 }, { nome: "Panturrilha em Pé + Sentado", series: "8x15", reps: "—", calorias: 65 }] },
+    "Sábado": { grupo: "Ombro / Bíceps", tempoMock: "1h 30 min", cor: "from-orange-500/20 to-red-900/20", icon: "🔥", exercicios: [{ nome: "Elevação Frontal Corda", series: 4, reps: 12, calorias: 55 }, { nome: "Desenvolvimento Frontal", series: "2x12 / 2x10", reps: "—", calorias: 90 }, { nome: "Crucifixo Inverso + Encolhimento Halter", series: 4, reps: 12, calorias: 75 }, { nome: "Elevação Lateral Polia (Drop)", series: "4 Drops", reps: "10/10/10", calorias: 95 }, { nome: "Rosca Direta W Polia", series: 4, reps: 12, calorias: 55 }, { nome: "Rosca Martelo Corda", series: 4, reps: 12, calorias: 60 }, { nome: "Rosca Concentrada Pulley", series: 4, reps: 12, calorias: 55 }, { nome: "Rosca Spider Halter 45°", series: "7x Limit", reps: "—", calorias: 90 }, { nome: "Prancha Abdominal", series: 4, reps: "2 min", calorias: 85 }, { nome: "Abdominal Máquina", series: 4, reps: 40, calorias: 50 }] },
+    "Domingo": { isRest: true, icon: "🧘", motivo: "Alongamento e recuperação geral" }
+};
+
+    "Domingo": { 
+        isRest: true,
+        icon: "🧘",
+        motivo: "Alongamento, relaxamento e recuperação."
+    }
+
+
+/* ---------- Player de Música (Blindado para Mobile) ---------- */
+function setupRadio() {
+    const playBtn = document.getElementById('playPauseButton');
+    const playIcon = document.getElementById('playPauseIcon');
+    const songTitle = document.getElementById('songTitle');
+    const wave = document.getElementById('music-wave');
+
+    if (!playBtn) return;
+
+    playBtn.addEventListener('click', () => {
+        if (radioAudio.paused) {
+            // Garante que o link está correto antes de disparar
+            if (!radioAudio.src || radioAudio.src === "") {
+                radioAudio.src = "https://stream.zeno.fm/71ntub27u18uv";
+            }
+
+            // Forçamos um load rápido e esperamos 150ms para o hardware mobile processar
+            radioAudio.load();
+            
+            setTimeout(() => {
+                const playPromise = radioAudio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        playIcon.classList.replace('fa-play', 'fa-pause');
+                        if (songTitle) songTitle.innerText = "TOCANDO PHONK";
+                        if (wave) wave.classList.remove('hidden');
+                    }).catch(error => {
+                        console.log("Reiniciando buffer...");
+                        // Tentativa de recuperação automática se for erro de interrupção
+                        radioAudio.play();
+                    });
+                }
+            }, 150);
+        } else {
+            radioAudio.pause();
+            playIcon.classList.replace('fa-pause', 'fa-play');
+            if (songTitle) songTitle.innerText = "TREINO ATIVO";
+            if (wave) wave.classList.add('hidden');
+        }
+    });
+>>>>>>> 8055fd1b53bc59e9cc32136640efd177a1ebb551
 }
 
 /* ---------- Lógica de Calorias e Anel ---------- */
@@ -136,7 +196,37 @@ function toggleVideo(id) {
     videoDiv.classList.toggle('hidden');
 }
 
+<<<<<<< HEAD
 /* ---------- Sistema de Dieta ---------- */
+=======
+/* ---------- Dieta ---------- */
+const dietaData = {
+    ON: [
+        { time: "04:30", item: "L-Cartinina 2ml", obs: "Aumentar 1ml a cada 3 dias" },
+        { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" },
+        { time: "08:00", item: "Café 100ml", obs: "Sem açúcar" },
+        { time: "10:00", item: "Café 100ml", obs: "Sem açúcar" },
+        { time: "12:00", item: "Whey Protein (2 scoops)", obs: "60g de proteína" },
+        { time: "14:00", item: "Café 100ml", obs: "Sem açúcar" },
+        { time: "16:00", item: "Whey Protein (2 scoops)", obs: "60g de proteína" },
+        { time: "18:00", item: "Arroz + Frango", obs: "100g Arroz + 200g Frango" },
+        { time: "20:00", item: "5HTP", obs: "5 cápsulas" },
+        { time: "21:30", item: "Gaba 1g", obs: "Antes de dormir" }
+    ],
+    OFF: [
+        { time: "04:30", item: "Mix de Chás", obs: "Hibisco + Cavalinha + Verde (10g cada)" },
+        { time: "06:00", item: "Creatina 7g", obs: "Pós-acordar" },
+        { time: "08:00", item: "Café 100ml", obs: "Sem açúcar" },
+        { time: "10:00", item: "Café 100ml", obs: "Sem açúcar" },
+        { time: "12:00", item: "Whey Protein (2 scoops)", obs: "60g de proteína" },
+        { time: "14:00", item: "Café 100ml", obs: "Sem açúcar" },
+        { time: "16:00", item: "Whey Protein (2 scoops)", obs: "60g de proteína" },
+        { time: "18:00", item: "Arroz + Frango", obs: "100g Arroz + 200g Frango" },
+        { time: "20:00", item: "5HTP", obs: "5 cápsulas" },
+        { time: "21:30", item: "Gaba 1g", obs: "Antes de dormir" }
+    ]
+};
+>>>>>>> 8055fd1b53bc59e9cc32136640efd177a1ebb551
 function renderDiet(tipo) {
     const container = document.getElementById('dietContainer');
     const db = JSON.parse(localStorage.getItem('dietaUsuario')) || { ON: [], OFF: [] };
